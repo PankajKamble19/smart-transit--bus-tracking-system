@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Login</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  background:#1e1e2f;
+  color:#fff;
+}
+
+.container{
+  width:340px;
+  background:#2c2f38;
+  border-radius:15px;
+  padding:25px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.5);
+  animation:slideDown 1s ease;
+}
+
+@keyframes slideDown{
+  from{transform:translateY(-200px);opacity:0;}
+  to{transform:translateY(0);opacity:1;}
+}
+
+.form{
+  display:none;
+  flex-direction:column;
+}
+
+.form.active{display:flex;}
+
+h2{
+  text-align:center;
+  color:#4cd137;
+  margin-bottom:20px;
+}
+
+input{
+  margin:10px 0;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#1e1e2f;
+  color:#fff;
+}
+
+input::placeholder{color:#aaa;}
+
+.btn{
+  margin-top:15px;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#4cd137;
+  color:#1e1e2f;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.btn:hover{background:#3ebc29;}
+
+.toggle{
+  margin-top:12px;
+  text-align:center;
+  font-size:13px;
+}
+
+.toggle a{
+  color:#4cd137;
+  text-decoration:none;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.toggle a:hover{text-decoration:underline;}
+
+.forgot{
+  text-align:right;
+  font-size:12px;
+}
+
+.forgot a{
+  color:#aaa;
+  text-decoration:none;
+}
+
+.forgot a:hover{color:#fff;}
+
+.message{
+  margin-top:8px;
+  font-size:13px;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div class="form active" id="loginForm">
+  <h2>Student Login</h2>
+
+  <input type="text" id="loginUsername" placeholder="Username or Email">
+  <input type="password" id="loginPassword" placeholder="Password">
+
+  <div class="forgot">
+    <a href="forgot3.html">Forgot Password?</a>
+  </div>
+
+  <div class="message" id="loginMsg"></div>
+
+  <button class="btn" onclick="login()">Login</button>
+
+  <div class="toggle">
+    Don’t have account? <a onclick="toggleForm()">Signup</a>
+  </div>
+</div>
+
+<!-- SIGNUP -->
+<div class="form" id="signupForm">
+  <h2>Create Account</h2>
+
+  <input type="text" id="signupUsername" placeholder="Username">
+  <input type="email" id="signupEmail" placeholder="Email">
+  <input type="password" id="signupPassword" placeholder="Password">
+
+  <div class="message" id="signupMsg"></div>
+
+  <button class="btn" onclick="signup()">Sign Up</button>
+
+  <div class="toggle">
+    Already have account? <a onclick="toggleForm()">Login</a>
+  </div>
+</div>
+
+</div>
+
+<script>
+function toggleForm(){
+  document.getElementById("loginForm").classList.toggle("active");
+  document.getElementById("signupForm").classList.toggle("active");
+}
+
+// SIGNUP
+function signup(){
+  let username = signupUsername.value.trim();
+  let email = signupEmail.value.trim();
+  let password = signupPassword.value;
+
+  let msg = document.getElementById("signupMsg");
+
+  if(!username || !email || !password){
+    msg.innerText="All fields required!";
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  let exists = users.some(u => u.email === email);
+
+  if(exists){
+    msg.innerText="User already exists!";
+    return;
+  }
+
+  users.push({username,email,password});
+  localStorage.setItem("users", JSON.stringify(users));
+
+  msg.innerText="Account Created!";
+  setTimeout(toggleForm,1000);
+}
+
+// LOGIN
+function login(){
+  let username = loginUsername.value.trim();
+  let password = loginPassword.value;
+
+  let msg = document.getElementById("loginMsg");
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  let user = users.find(u =>
+    (u.username === username || u.email === username) &&
+    u.password === password
+  );
+
+  if(user){
+    msg.innerText="Login Successful!";
+    setTimeout(()=>{
+      window.location.href="kag_dashboard.html";
+    },1000);
+  } else {
+    msg.innerText="Invalid Credentials!";
+  }
+}
+</script>
+
+</body>
+</html>

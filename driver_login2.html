@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Driver Login</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  background:#1e1e2f;
+  color:#fff;
+}
+
+.container{
+  width:340px;
+  background:#2c2f38;
+  border-radius:15px;
+  padding:25px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.5);
+  animation:slideDown 1s ease;
+}
+
+@keyframes slideDown{
+  from{transform:translateY(-200px);opacity:0;}
+  to{transform:translateY(0);opacity:1;}
+}
+
+.form{
+  display:none;
+  flex-direction:column;
+}
+
+.form.active{
+  display:flex;
+}
+
+h2{
+  text-align:center;
+  color:#4cd137;
+  margin-bottom:20px;
+}
+
+input{
+  margin:10px 0;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#1e1e2f;
+  color:#fff;
+}
+
+input::placeholder{
+  color:#aaa;
+}
+
+.btn{
+  margin-top:15px;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#4cd137;
+  color:#1e1e2f;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.btn:hover{
+  background:#3ebc29;
+}
+
+.toggle{
+  margin-top:12px;
+  text-align:center;
+  font-size:13px;
+}
+
+.toggle a{
+  color:#4cd137;
+  text-decoration:none;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.toggle a:hover{
+  text-decoration:underline;
+}
+
+.forgot{
+  text-align:right;
+  font-size:12px;
+}
+
+.forgot a{
+  color:#aaa;
+  text-decoration:none;
+}
+
+.forgot a:hover{
+  color:#fff;
+}
+
+.message{
+  margin-top:8px;
+  font-size:13px;
+  text-align:center;
+  color:#fff;
+}
+
+.learn{
+  margin-top:10px;
+  text-align:center;
+  font-size:12px;
+}
+
+.learn a{
+  color:#aaa;
+  text-decoration:none;
+}
+
+.learn a:hover{
+  color:#fff;
+}
+
+/* Modal */
+.modal{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+}
+
+.modal-content{
+  background:#2c2f38;
+  padding:25px;
+  width:80%;
+  max-width:450px;
+  border-radius:12px;
+  text-align:center;
+  animation:slideDown 0.5s ease;
+}
+
+.modal-content h3{
+  color:#4cd137;
+  margin-bottom:15px;
+}
+
+.modal-content p{
+  color:#ddd;
+  line-height:1.6;
+}
+
+.close-btn{
+  margin-top:15px;
+  padding:8px 18px;
+  border:none;
+  border-radius:8px;
+  background:#4cd137;
+  color:#1e1e2f;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.close-btn:hover{
+  background:#3ebc29;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div class="form active" id="loginForm">
+  <h2>Driver Login</h2>
+
+  <input type="text" id="loginUsername" placeholder="Username or Email">
+  <input type="password" id="loginPassword" placeholder="Password">
+
+  <div class="forgot">
+    <a href="#" onclick="forgotPassword()">Forgot Password?</a>
+  </div>
+
+  <div class="message" id="loginMsg"></div>
+
+  <button class="btn" onclick="login()">Login</button>
+
+  <div class="toggle">
+    Don’t have account? <a onclick="toggleForm()">Signup</a>
+  </div>
+
+  <div class="learn">
+    <a href="#" onclick="openModal()">Learn More</a>
+  </div>
+</div>
+
+<!-- SIGNUP -->
+<div class="form" id="signupForm">
+  <h2>Create Driver Account</h2>
+
+  <input type="text" id="signupUsername" placeholder="Username">
+  <input type="email" id="signupEmail" placeholder="Email">
+  <input type="password" id="signupPassword" placeholder="Password">
+
+  <div class="message" id="signupMsg"></div>
+
+  <button class="btn" onclick="signup()">Sign Up</button>
+
+  <div class="toggle">
+    Already have account? <a onclick="toggleForm()">Login</a>
+  </div>
+
+  <div class="learn">
+    <a href="#" onclick="openModal()">Learn More</a>
+  </div>
+</div>
+
+</div>
+
+<!-- Learn More Modal -->
+<div class="modal" id="infoModal">
+  <div class="modal-content">
+    <h3>About Driver Portal</h3>
+    <p>
+      This Driver Login page provides secure access to the Driver Dashboard.<br><br>
+      ✅ Only authorized drivers can log in.<br>
+      ✅ View schedules, attendance, and assignments.<br>
+      ✅ Access info safely.<br><br>
+      Designed with modern UI and animations for a better experience.
+    </p>
+    <button class="close-btn" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+// Toggle Login/Signup
+function toggleForm(){
+  document.getElementById("loginForm").classList.toggle("active");
+  document.getElementById("signupForm").classList.toggle("active");
+}
+
+// SIGNUP
+function signup(){
+  let username = document.getElementById("signupUsername").value.trim();
+  let email = document.getElementById("signupEmail").value.trim();
+  let password = document.getElementById("signupPassword").value;
+
+  let msg = document.getElementById("signupMsg");
+
+  if(!username || !email || !password){
+    msg.innerText="All fields required!";
+    return;
+  }
+
+  let drivers = JSON.parse(localStorage.getItem("drivers")) || [];
+
+  // Check duplicate username or email
+  let exists = drivers.some(d =>
+    d.username === username || d.email === email
+  );
+
+  if(exists){
+    msg.innerText="Driver already exists!";
+    return;
+  }
+
+  drivers.push({username,email,password});
+  localStorage.setItem("drivers", JSON.stringify(drivers));
+
+  msg.innerText="Account Created Successfully!";
+
+  setTimeout(()=>{
+    document.getElementById("signupUsername").value="";
+    document.getElementById("signupEmail").value="";
+    document.getElementById("signupPassword").value="";
+    msg.innerText="";
+    toggleForm();
+  },1000);
+}
+
+// LOGIN
+function login(){
+  let username = document.getElementById("loginUsername").value.trim();
+  let password = document.getElementById("loginPassword").value;
+
+  let msg = document.getElementById("loginMsg");
+
+  let drivers = JSON.parse(localStorage.getItem("drivers")) || [];
+
+  let driver = drivers.find(d =>
+    (d.username === username || d.email === username) &&
+    d.password === password
+  );
+
+  if(driver){
+    msg.innerText="Login Successful!";
+    setTimeout(()=>{
+      window.location.href="driver_dashboard2.html";
+    },1000);
+  } else {
+    msg.innerText="Invalid Credentials!";
+  }
+}
+
+// Forgot Password
+function forgotPassword(){
+  window.location.href="d_forgot2.html";
+}
+
+// Modal
+function openModal(){
+  document.getElementById("infoModal").style.display="flex";
+}
+
+function closeModal(){
+  document.getElementById("infoModal").style.display="none";
+}
+
+// Close Modal Outside Click
+window.onclick = function(event){
+  let modal = document.getElementById("infoModal");
+  if(event.target == modal){
+    modal.style.display = "none";
+  }
+}
+</script>
+
+</body>
+</html>

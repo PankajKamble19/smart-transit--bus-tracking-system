@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bus Routes & Schedule</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      transition: background 0.3s, color 0.3s;
+    }
+    .sidebar {
+      width: 220px;
+      background: #343a40;
+      color: white;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding-top: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .sidebar h4 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+      font-size: 15px;
+      transition: background 0.3s;
+    }
+    .sidebar a:hover {
+      background: #495057;
+    }
+    .main-content {
+      margin-left: 220px;
+      padding: 20px;
+      width: calc(100% - 220px);
+      background: #f8f9fa;
+      min-height: 100vh;
+      display: flex;
+      justify-content: space-between;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark-mode {
+      background: #121212;
+      color: #eaeaea;
+    }
+    body.dark-mode .main-content {
+      background: #1e1e1e;
+      color: #eaeaea;
+    }
+    body.dark-mode .sidebar {
+      background: #1b1b1b;
+    }
+    body.dark-mode th {
+      background: #444 !important;
+    }
+    .table-section {
+      flex: 1;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      background: #fff;
+      transition: background 0.3s, color 0.3s;
+    }
+    th {
+      background: #343a40;
+      color: #fff;
+      text-align: center;
+    }
+    td {
+      text-align: center;
+    }
+    body.dark-mode table {
+      background: #2b2b2b;
+      color: #eaeaea;
+    }
+    .driver-profile {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .driver-profile img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      border: 2px solid #343a40;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+    .driver-profile img:hover {
+      transform: scale(1.1);
+    }
+    .driver-info {
+      display: none;
+      position: absolute;
+      top: 55px;
+      right: 0;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      width: 180px;
+      font-size: 13px;
+      z-index: 10;
+    }
+    .driver-profile.active .driver-info {
+      display: block;
+    }
+    body.dark-mode .driver-info {
+      background: #2b2b2b;
+      color: #eaeaea;
+    }
+    .mode-toggle {
+      font-size: 24px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .mode-toggle:hover {
+      transform: scale(1.2);
+    }
+    .profile-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+     <h4>Menu</h4>
+    <a href="Hupari_dashboard.html">🏠 Dashboard</a>
+    <a href="hup_stud_form.html">📝 Student Registration</a>
+    <a href="Hup_bus_Routes_Schedule.html">🚌 Bus Routes</a>
+    <a href="Hup_driver_details.html">👨‍✈️ Driver</a>
+    <a href="Hup_support.html">🆘 Support</a>
+    <a href="Hup_notification.html">🔔 Notifications</a>
+    <a href="Hup_setting.html" class="active">⚙️ Settings</a>
+    <a href="index.html">🏠 Back to Home</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <div class="table-section">
+      <h2>🚌 Bus Routes & Schedule</h2>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Stop No.</th>
+            <th>Village</th>
+            <th>Arrival Time</th>
+          </tr>
+        </thead>
+        <tbody id="busSchedule"></tbody>
+      </table>
+    </div>
+
+    <div class="profile-wrapper">
+      <div class="driver-profile" onclick="this.classList.toggle('active')">
+        <img src="assets/images/gar_bus.jpeg" alt="Driver Symbol">
+        <div class="driver-info">
+          <strong>Mr. Ashok Kamble</strong><br>
+          Bus Driver<br>
+          <b>Experience:</b> <br>
+          <b>Contact:</b> +91 7058347845<br>
+          <b>Bus No:</b> MH-09 GJ 4821
+        </div>
+      </div>
+      <span class="mode-toggle" id="modeToggle">🌙</span>
+    </div>
+
+  </div>
+
+<script>
+  // ✅ Updated Bus Stops
+  const busStops = [
+    "Yalgud", "Hupari", "Pattan Kodoli", "Mudshingi", "Gandhinagar",
+    "Railway Station", "Titan Showroom", "Hocky Stadium",
+  ];
+
+  // Starting time at Madilage: 7:45 AM
+  let startTime = new Date();
+  startTime.setHours(7, 45, 0);
+
+  const scheduleBody = document.getElementById("busSchedule");
+
+  busStops.forEach((stop, index) => {
+    let arrival = new Date(startTime.getTime() + index * 5 * 60000);
+    let timeStr = arrival.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    scheduleBody.innerHTML += `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${stop}</td>
+        <td>${timeStr}</td>
+      </tr>
+    `;
+  });
+
+  // ✅ Dark Mode Toggle
+  const toggleBtn = document.getElementById("modeToggle");
+  toggleBtn.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    toggleBtn.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Driver Live Tracking Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<style>
+body { background: #eef2f3; font-family: 'Segoe UI'; }
+.navbar { background: linear-gradient(90deg, #2f4f4f, #3b7a57); }
+.navbar .navbar-brand { color: white; font-weight: 600; }
+.card { border-radius: 15px; box-shadow: 0 5px 12px rgba(0,0,0,0.1); }
+#map { width: 100%; height: 320px; border-radius: 10px; margin-top: 15px; }
+.btn-green { background: #198754; color: white; }
+.btn-green:hover { background: #157347; }
+.btn-grey { background: #6c757d; color: white; }
+.badge-status { padding: 6px 10px; border-radius: 8px; }
+</style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <span class="navbar-brand">👨‍✈️ Driver Live Tracking Dashboard</span>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <div class="card p-4">
+
+    <h4 class="text-center text-success mb-3">Welcome, Mr. Prakash Bodake </h4>
+
+    <p><strong>🚌 Bus No:</strong> MH-09 FL 7993</p>
+    <p><strong>📍 Route:</strong> Salvan ➝ Kolhapur</p>
+    <p><strong>📞 Mobile:</strong> 8208032148</p>
+
+    <div class="text-center">
+      <button id="startBtn" class="btn btn-green me-2">▶️ Start Live Sharing</button>
+      <button id="stopBtn" class="btn btn-grey" disabled>⏹ Stop Sharing</button>
+      <a href="sal_driver_details.html" target="_blank" class="btn btn-green ms-2">👁 View Admin Map</a>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="text-center mt-3">
+      <span id="statusBadge" class="badge bg-secondary badge-status">Inactive</span>
+      <p id="statusText">📍 Location sharing not started.</p>
+      <p id="timeStamp"></p>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<script>
+// ================= FIREBASE =================
+const firebaseConfig = {
+  apiKey: "AIzaSyDfSe0P5e3G0ifXPZaXsWB8knSPVo8payE",
+  authDomain: "tracking-bus-29dd8.firebaseapp.com",
+  databaseURL: "https://tracking-bus-29dd8-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tracking-bus-29dd8",
+  storageBucket: "tracking-bus-29dd8.firebasestorage.app",
+  messagingSenderId: "733874281179",
+  appId: "1:733874281179:web:89873e7f72578c6da34afe"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ================= DRIVER ID =================
+const driverId = "8208032148"; // later from login
+
+// ================= MAP =================
+let map = L.map("map").setView([0, 0], 2);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+let marker = L.marker([0, 0]).addTo(map);
+
+let pathPoints = [];
+let polyline = L.polyline(pathPoints, { color: "green" }).addTo(map);
+
+let watchId = null;
+
+// ================= INTERNET CHECK =================
+function checkInternet() {
+  if (!navigator.onLine) {
+    alert("No Internet Connection ❌");
+    return false;
+  }
+  return true;
+}
+
+// ================= START =================
+document.getElementById("startBtn").onclick = () => {
+
+  if (!navigator.geolocation) {
+    alert("Geolocation not supported ❌");
+    return;
+  }
+
+  document.getElementById("statusText").textContent = "⏳ Fetching location...";
+
+  watchId = navigator.geolocation.watchPosition(pos => {
+
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    const accuracy = pos.coords.accuracy;
+    const now = new Date().toLocaleTimeString();
+
+    // Update map
+    marker.setLatLng([lat, lng]);
+    map.setView([lat, lng], 15);
+
+    // Path
+    pathPoints.push([lat, lng]);
+    polyline.setLatLngs(pathPoints);
+
+    // Check internet before sending
+    if (!checkInternet()) return;
+
+    // SEND TO FIREBASE
+    db.ref("drivers/" + driverId).update({
+      lat: lat,
+      lng: lng,
+      accuracy: accuracy,
+      timestamp: Date.now(),
+      time: now,
+      status: "active"
+    });
+
+    // UI update
+    document.getElementById("statusBadge").className = "badge bg-success badge-status";
+    document.getElementById("statusBadge").textContent = "Active";
+    document.getElementById("statusText").textContent =
+      `🟢 Live: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    document.getElementById("timeStamp").textContent =
+      `⏱ Updated at: ${now}`;
+
+  }, showError, {
+    enableHighAccuracy: true,
+    maximumAge: 10000,
+    timeout: 5000
+  });
+
+  document.getElementById("startBtn").disabled = true;
+  document.getElementById("stopBtn").disabled = false;
+};
+
+// ================= STOP =================
+document.getElementById("stopBtn").onclick = () => {
+
+  if (watchId !== null) {
+    navigator.geolocation.clearWatch(watchId);
+    watchId = null;
+  }
+
+  db.ref("drivers/" + driverId).update({
+    status: "inactive"
+  });
+
+  document.getElementById("statusBadge").className = "badge bg-secondary badge-status";
+  document.getElementById("statusBadge").textContent = "Inactive";
+  document.getElementById("statusText").textContent = "🔴 Sharing stopped.";
+
+  document.getElementById("startBtn").disabled = false;
+  document.getElementById("stopBtn").disabled = true;
+};
+
+// ================= ERROR HANDLING =================
+function showError(error) {
+
+  let message = "";
+
+  switch(error.code) {
+    case error.PERMISSION_DENIED:
+      message = "❌ Location permission denied.";
+      break;
+
+    case error.POSITION_UNAVAILABLE:
+      message = "⚠️ Location unavailable.";
+      break;
+
+    case error.TIMEOUT:
+      message = "⏳ Location request timed out.";
+      break;
+
+    default:
+      message = "Unknown error occurred.";
+  }
+
+  document.getElementById("statusBadge").className = "badge bg-danger badge-status";
+  document.getElementById("statusBadge").textContent = "Error";
+  document.getElementById("statusText").textContent = message;
+
+  console.error("GPS ERROR ❌", error);
+}
+</script>
+
+</body>
+</html>

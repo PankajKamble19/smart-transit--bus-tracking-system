@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bus No. 1 Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{
+display:flex;
+height:100vh;
+background:linear-gradient(135deg,#dff6ff,#f4f7ff);
+}
+
+/* Sidebar */
+.sidebar{
+width:250px;
+background:linear-gradient(180deg,#2c3e50,#1e272e);
+color:white;
+padding:25px;
+position:fixed;
+height:100%;
+}
+
+.sidebar h2{
+text-align:center;
+margin-bottom:30px;
+color:#4cd137;
+}
+
+.sidebar a{
+display:block;
+text-decoration:none;
+color:white;
+padding:12px;
+margin:8px 0;
+border-radius:8px;
+background:rgba(255,255,255,0.05);
+transition:0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+background:#4cd137;
+color:#1e272e;
+}
+
+.back-home{
+margin-top:40px;
+text-align:center;
+background:#34495e;
+}
+
+/* Main */
+.main{
+margin-left:250px;
+padding:30px;
+width:calc(100% - 250px);
+}
+
+.header{
+margin-bottom:25px;
+}
+
+/* Cards */
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;
+margin-bottom:25px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 8px 18px rgba(0,0,0,0.1);
+}
+
+.card h3{
+color:#4cd137;
+}
+
+/* Map */
+.map iframe{
+width:100%;
+height:350px;
+border:none;
+border-radius:12px;
+}
+
+/* Bottom */
+.bottom{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
+}
+
+.bus-img{
+width:100%;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+.driver-img{
+width:150px;
+height:150px;
+border-radius:50%;
+object-fit:cover;
+border:4px solid #4cd137;
+margin-bottom:15px;
+}
+
+.driver{text-align:center;}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<h2>🚌 Bus No. 1</h2>
+
+<a href="a_regi_no1.html" class="active">Student Records</a>
+<a href="a_atten_no1.html">Attendance</a>
+<a href="#">Bus Schedule</a>
+<br>
+<a href="admin_dashbord.html" class="back-home">⬅ Back to Home</a>
+</div>
+
+<div class="main">
+
+<div class="header">
+<h2>Admin Dashboard</h2>
+</div>
+
+<div class="cards">
+<div class="card"><h3>Bus Number</h3><p>MH09 AB 1234</p></div>
+<div class="card"><h3>Route</h3><p>Gargoti → Kolhapur</p></div>
+<div class="card"><h3>Total Seats</h3><p>40</p></div>
+<div class="card"><h3>Conductor</h3><p>Mr. Dasharath Kumbhar</p></div>
+</div>
+
+<div class="map">
+<h3 style="color:#4cd137;">📍 Bus Location</h3>
+<iframe src="https://www.google.com/maps?q=kolhapur&output=embed"></iframe>
+</div>
+
+<div class="bottom">
+
+<div class="card">
+<h3>Bus Information</h3>
+<img src="assets/images/bus_no1.jpg" class="bus-img">
+<p><b>Bus Number:</b> MH09 AB 1234</p>
+<p><b>Route:</b> Gargoti → Kolhapur</p>
+<p><b>Total Seats:</b> 40</p>
+<p><b>Conductor:</b> Mr. Dasharath Kumbhar</p>
+</div>
+
+<div class="card driver">
+<h3>Driver Profile</h3>
+<img src="assets/images/gar_bus.jpeg" class="driver-img">
+<p><b>Name:</b> Mr. Dasharath Kumbhar</p>
+<p><b>Age:</b> 45</p>
+<p><b>Experience:</b> 12 Years</p>
+<p><b>Contact:</b> +91 98765 43210</p>
+<p><b>License No:</b> MH09-DRV-23456</p>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Bus Pass</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body { 
+  padding: 20px; 
+  background: #e9f7ef; 
+  font-family: 'Segoe UI'; 
+}
+
+/* ✅ Green themed bus pass card */
+.bus-pass { 
+  display: flex; 
+  flex-direction: column; /* To include header on top */
+  border: 2px solid #28a745; 
+  background: linear-gradient(135deg, #c8f7c5, #e9fbe5); /* soft green gradient */
+  max-width: 950px; 
+  margin: auto; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* College title header */
+.college-title {
+  width: 100%; 
+  background:#28a745; 
+  color:white; 
+  text-align:center; 
+  padding:8px 0; 
+  font-weight:bold; 
+  font-size:18px;
+}
+
+/* Container for student and bus details */
+.bus-pass-content {
+  display: flex;
+}
+
+.left-section, .right-section { 
+  flex: 1; 
+  border-right: 2px solid #155724; 
+  padding: 15px; 
+}
+.right-section { border-right: none; }
+
+h4 {
+  color: #155724; /* deep green heading */
+  border-bottom: 2px solid #28a745;
+  padding-bottom: 5px;
+}
+
+.student-photo { 
+  width: 120px; 
+  height: 150px; 
+  border: 3px solid #155724; 
+  object-fit: cover; 
+  display: block; 
+  margin: 10px auto; 
+  border-radius: 8px;
+}
+
+.btn-secondary, .btn-success, .btn-primary {
+  border: none;
+}
+
+.btn-secondary { background-color: #28a745; }
+.btn-secondary:hover { background-color: #218838; }
+
+.btn-success { background-color: #198754; }
+.btn-success:hover { background-color: #157347; }
+
+.btn-primary { background-color: #0d6efd; }
+.btn-primary:hover { background-color: #0b5ed7; }
+
+button { margin: 5px; }
+</style>
+</head>
+<body>
+
+<!-- ✅ Full Bus Pass Card with College Title -->
+<div class="bus-pass" id="busPass">
+  <!-- College Name Header -->
+  <div class="college-title">
+    D. Y. Patil Pratishthan’s College of Engineering
+  </div>
+
+  <!-- Student & Bus Details -->
+  <div class="bus-pass-content">
+    <div class="left-section">
+      <h4>Student Info</h4>
+      <p><strong>Name:</strong> <span id="studentName"></span></p>
+      <p><strong>College:</strong> <span id="collegeName"></span></p>
+      <p><strong>Department:</strong> <span id="department"></span></p>
+      <p><strong>Year/Class:</strong> <span id="yearClass"></span></p>
+      <p><strong>Aadhar No:</strong> <span id="aadharCard"></span></p>
+      <p><strong>Mobile:</strong> <span id="mobileNo"></span></p>
+    </div>
+
+    <div class="right-section">
+      <h4>Bus Details</h4>
+      <img id="studentPhoto" class="student-photo" src="">
+      <p><strong>Route:</strong> <span id="busRoute"></span></p>
+      <p><strong>Stop:</strong> <span id="busStop"></span></p>
+      <p><strong>Fees:</strong> Rs. <span id="busFees"></span></p>
+      <p><strong>Paid Date:</strong> <span id="busPaidDate"></span></p>
+      <p><strong>Receipt No:</strong> <span id="busReceiptNo"></span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Action Buttons -->
+<div class="text-center mt-4">
+  <button class="btn btn-secondary" onclick="goHome()">🏠 Back to Home</button>
+  <button class="btn btn-success" onclick="printBusPass()">🖨️ Print</button>
+  <button class="btn btn-primary" onclick="downloadPDF()">📄 Save as PDF</button>
+</div>
+
+<!-- ✅ Include html2pdf library for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+window.onload = () => {
+  const data = JSON.parse(localStorage.getItem("studentBusPass"));
+  if(!data){ 
+    alert("No data found!"); 
+    window.location.href="dham_stud_form.html"; 
+    return; 
+  }
+
+  document.getElementById("studentName").textContent = data.name;
+  document.getElementById("collegeName").textContent = data.college;
+  document.getElementById("department").textContent = data.department;
+  document.getElementById("yearClass").textContent = data.yearClass;
+  document.getElementById("aadharCard").textContent = data.aadhar;
+  document.getElementById("mobileNo").textContent = data.mobile;
+  document.getElementById("busRoute").textContent = data.busRoute;
+  document.getElementById("busStop").textContent = data.busStop;
+  document.getElementById("busFees").textContent = data.busFees;
+  document.getElementById("busPaidDate").textContent = data.busPaidDate;
+  document.getElementById("busReceiptNo").textContent = data.busReceiptNo;
+  document.getElementById("studentPhoto").src = data.photo;
+
+  // ✅ Save to admin database without duplicating
+  let allData = JSON.parse(localStorage.getItem("studentBusPassAll")) || [];
+  const exists = allData.some(s => s.aadhar === data.aadhar);
+  if (!exists) {
+    allData.push(data);
+    localStorage.setItem("studentBusPassAll", JSON.stringify(allData));
+  }
+};
+
+function goHome() {
+  window.location.href = "dham_dashboard.html";
+}
+
+// ✅ Print bus pass
+function printBusPass() {
+  const printContents = document.getElementById("busPass").innerHTML;
+  const originalContents = document.body.innerHTML;
+  document.body.innerHTML = printContents;
+  window.print();
+  document.body.innerHTML = originalContents;
+  location.reload();
+}
+
+// ✅ Download bus pass as PDF
+function downloadPDF() {
+  const element = document.getElementById("busPass");
+  html2pdf().set({ margin: 10, filename: 'Student_Bus_Pass.pdf', html2canvas: { scale: 2 } }).from(element).save();
+}
+</script>
+</body>
+</html>

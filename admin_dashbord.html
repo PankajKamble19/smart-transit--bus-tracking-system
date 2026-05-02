@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bus Transport System - Admin Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+<style>
+body{
+font-family:'Poppins',sans-serif;
+margin:0;
+background:#eef2f3;
+display:flex;
+}
+
+/* Sidebar */
+.sidebar{
+width:260px;
+background:#3a3b3c;
+color:white;
+position:fixed;
+height:100%;
+padding-top:20px;
+box-shadow:2px 0 10px rgba(0,0,0,0.2);
+display:flex;
+flex-direction:column;
+}
+
+.sidebar h2{
+text-align:center;
+margin-bottom:25px;
+color:#4CD137;
+}
+
+.sidebar a{
+display:block;
+padding:12px 20px;
+color:white;
+text-decoration:none;
+border-radius:6px;
+transition:.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+background:#4CD137;
+color:#1e1e2f;
+}
+
+.submenu{
+display:none;
+margin-left:10px;
+border-left:2px solid #4CD137;
+}
+
+.submenu a{
+padding:10px 25px;
+font-size:14px;
+}
+
+.back-home{
+margin-top:auto;
+color:#ff5c5c;
+text-align:center;
+}
+
+/* Main */
+.main-content{
+margin-left:260px;
+width:100%;
+padding:25px;
+}
+
+/* Top Bar */
+.topbar{
+background:white;
+padding:15px 25px;
+border-radius:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
+margin-bottom:25px;
+}
+
+.icon-btn{
+border:none;
+background:none;
+font-size:20px;
+cursor:pointer;
+margin-left:10px;
+}
+
+/* Stats Cards */
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-bottom:25px;
+}
+
+.stat-card{
+padding:20px;
+border-radius:12px;
+color:white;
+box-shadow:0 3px 10px rgba(0,0,0,0.15);
+}
+
+.stat-green{
+background:linear-gradient(45deg,#3ecf2f,#4CD137);
+}
+
+.stat-grey{
+background:linear-gradient(45deg,#6c757d,#868e96);
+}
+
+.stat-dark{
+background:linear-gradient(45deg,#2f3640,#576574);
+}
+
+/* Dashboard Row */
+.dashboard-row{
+display:flex;
+gap:20px;
+}
+
+/* Chart */
+.chart-box{
+flex:2;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* Calendar */
+.calendar-box{
+flex:1;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+
+.calendar table{
+width:100%;
+text-align:center;
+}
+
+.calendar th{
+color:#4CD137;
+padding:6px;
+}
+
+.calendar td{
+padding:8px;
+border-radius:5px;
+}
+
+.calendar td:hover{
+background:#4CD137;
+color:white;
+cursor:pointer;
+}
+
+.today{
+background:#4CD137;
+color:white;
+font-weight:bold;
+}
+
+/* Popup */
+.popup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+justify-content:center;
+align-items:center;
+}
+
+.popup-content{
+background:white;
+padding:25px;
+border-radius:10px;
+width:300px;
+text-align:center;
+}
+
+.close-btn{
+background:#4CD137;
+border:none;
+padding:8px 15px;
+color:white;
+border-radius:5px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.close-btn:hover{
+opacity:0.9;
+}
+
+/* Footer */
+.footer{
+text-align:center;
+margin-top:30px;
+color:gray;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+
+<h2>🚌 Transport</h2>
+
+<a href="#" class="active">🏠 Home</a>
+
+<a href="#" onclick="toggleMenu('busListMenu')">🚌 Bus List ▾</a>
+
+<div class="submenu" id="busListMenu">
+<a href="bus_no1.html">Bus No.1</a>
+<a href="bus_no2.html">Bus No.2</a>
+<a href="bus_no3.html">Bus No.3</a>
+<a href="bus_no4.html">Bus No.4</a>
+<a href="bus_no5.html">Bus No.5</a>
+<a href="bus_no6.html">Bus No.6</a>
+<a href="bus_no7.html">Bus No.7</a>
+<a href="bus_no8.html">Bus No.8</a>
+<a href="bus_no9.html">Bus No.9</a>
+<a href="bus_no10.html">Bus No.10</a>
+</div>
+
+<a href="a_bus_management.html">🚍 Bus Management</a>
+<a href="a_driver_management.html">👨‍✈️ Driver Management</a>
+<a href="a_driver_records.html">👨‍✈️ Driver Record</a>
+<a href="a_maintenance.html">🛠️ Maintenance</a>
+
+<a href="#" onclick="toggleMenu('notificationMenu')">🔔 Notifications ▾</a>
+
+<div class="submenu" id="notificationMenu">
+<a href="a_notification.html">Bus No.1</a>
+<a href="b_notification.html">Bus No.2</a>
+<a href="b_notification.html">Bus No.3</a>
+<a href="b_notification.html">Bus No.4</a>
+<a href="b_notification.html">Bus No.5</a>
+<a href="b_notification.html">Bus No.6</a>
+<a href="b_notification.html">Bus No.7</a>
+<a href="b_notification.html">Bus No.8</a>
+<a href="b_notification.html">Bus No.9</a>
+<a href="b_notification.html">Bus No.10</a>
+</div>
+
+<a href="#">🆘 Support / Help</a>
+
+<br><br>
+
+<a href="index.html" class="back-home">⬅ Back to Home</a>
+
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+<!-- Topbar -->
+<div class="topbar">
+<h4>Dashboard</h4>
+
+<div>
+<button class="icon-btn">📊</button>
+<button class="icon-btn" onclick="openAdmin()">👤</button>
+<button class="icon-btn" onclick="logoutAdmin()">🚪</button>
+</div>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+
+<div class="stat-card stat-green">
+<h5>Total Students</h5>
+<h2>400</h2>
+<p>18% higher than last month</p>
+</div>
+
+<div class="stat-card stat-dark">
+<h5>Total Drivers</h5>
+<h2>10</h2>
+<p>21% higher than last month</p>
+</div>
+
+<div class="stat-card stat-grey">
+<h5>Total Buses</h5>
+<h2>10</h2>
+<p>37% higher than last month</p>
+</div>
+
+<div class="stat-card stat-green">
+<h5>Total Earnings</h5>
+<h2>25,6980</h2>
+<p>10% higher than last month</p>
+</div>
+
+</div>
+
+<!-- Chart + Calendar -->
+<div class="dashboard-row">
+
+<div class="chart-box">
+<h5>Transport Analytics</h5>
+<canvas id="transportChart"></canvas>
+</div>
+
+<div class="calendar-box">
+
+<h5 id="monthYear">Calendar</h5>
+
+<div class="calendar">
+<table>
+<thead>
+<tr>
+<th>Sun</th>
+<th>Mon</th>
+<th>Tue</th>
+<th>Wed</th>
+<th>Thu</th>
+<th>Fri</th>
+<th>Sat</th>
+</tr>
+</thead>
+<tbody id="calendarBody"></tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+© 2025 Bus Transport Management System
+</div>
+
+</div>
+
+<!-- Admin Popup -->
+<div class="popup" id="adminPopup">
+
+<div class="popup-content">
+
+<h4>Admin Information</h4>
+
+<p><b>Name:</b> Transport Admin</p>
+<p><b>Role:</b> System Manager</p>
+<p><b>Email:</b> admin@transport.com</p>
+<p><b>Phone:</b> +91 9876543210</p>
+
+<button class="close-btn" onclick="closeAdmin()">Close</button>
+<button class="close-btn" onclick="logoutAdmin()" style="background:#ff4d4d; margin-left:8px;">Logout</button>
+
+</div>
+
+</div>
+
+<script>
+
+// Toggle Sidebar Menus
+function toggleMenu(id){
+const menu = document.getElementById(id);
+menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+/* Chart */
+new Chart(document.getElementById("transportChart"), {
+type:'line',
+data:{
+labels:["Mon","Tue","Wed","Thu","Fri","Sat"],
+datasets:[
+{
+label:"Students",
+data:[320,340,300,350,360,330],
+borderColor:"#4CD137",
+fill:false
+},
+{
+label:"Drivers",
+data:[40,30,50,20,25,40],
+borderColor:"#636e72",
+fill:false
+}
+]
+}
+});
+
+/* Calendar */
+function generateCalendar(){
+
+const today = new Date();
+const year = today.getFullYear();
+const month = today.getMonth();
+
+const firstDay = new Date(year,month,1).getDay();
+const lastDate = new Date(year,month+1,0).getDate();
+
+const monthNames = [
+"January","February","March","April","May","June",
+"July","August","September","October","November","December"
+];
+
+document.getElementById("monthYear").innerText =
+monthNames[month] + " " + year;
+
+let calendarBody = document.getElementById("calendarBody");
+
+let date = 1;
+let rows = "";
+
+for(let i=0;i<6;i++){
+
+let row = "<tr>";
+
+for(let j=0;j<7;j++){
+
+if(i===0 && j<firstDay){
+row += "<td></td>";
+}
+
+else if(date>lastDate){
+row += "<td></td>";
+}
+
+else{
+
+let className = "";
+
+if(date===today.getDate()){
+className = "today";
+}
+
+row += `<td class="${className}">${date}</td>`;
+date++;
+}
+}
+
+row += "</tr>";
+rows += row;
+}
+
+calendarBody.innerHTML = rows;
+}
+
+generateCalendar();
+
+/* Admin Popup */
+function openAdmin(){
+document.getElementById("adminPopup").style.display = "flex";
+}
+
+function closeAdmin(){
+document.getElementById("adminPopup").style.display = "none";
+}
+
+/* Logout */
+function logoutAdmin(){
+let confirmLogout = confirm("Are you sure you want to logout?");
+
+if(confirmLogout){
+sessionStorage.clear();
+localStorage.removeItem("adminLoggedIn");
+window.location.href = "admin_login.html";
+}
+}
+
+/* Close popup outside click */
+window.onclick = function(event){
+const popup = document.getElementById("adminPopup");
+if(event.target === popup){
+popup.style.display = "none";
+}
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radhanagari Student Bus Pass</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+body { 
+  padding: 20px; 
+  font-family: 'Segoe UI', sans-serif; 
+  background: #f8f9fa; 
+}
+.bus-pass {
+  display: flex;
+  border: 2px solid #212529;
+  max-width: 950px;
+  margin: auto;
+  background: #fff;
+}
+.left-section, .right-section {
+  flex: 1;
+  border-right: 2px solid #212529;
+  padding: 15px;
+}
+.right-section { border-right: none; }
+.left-section h4, .right-section h4 {
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+.field-row {
+  display: flex;
+  border-bottom: 1px solid #dee2e6;
+  padding: 4px 0;
+}
+.field-row strong {
+  width: 160px;
+  display: inline-block;
+}
+.student-photo {
+  width: 130px; height: 160px;
+  border: 2px solid #212529;
+  object-fit: cover;
+  display: block;
+  margin: 10px auto;
+}
+.table-fees th, .table-fees td {
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #212529;
+  padding: 5px;
+}
+.remarks {
+  margin-top: 10px;
+  border: 1px solid #212529;
+  padding: 8px;
+  min-height: 60px;
+  font-size: 14px;
+}
+.btn-group-custom {
+  margin: 20px auto;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="bus-pass" id="busPass">
+
+  <!-- LEFT SECTION -->
+  <div class="left-section">
+    <h4>Student Details</h4>
+    <div class="field-row"><strong>Name:</strong> <span id="studentName"></span></div>
+    <div class="field-row"><strong>College:</strong> <span id="collegeName"></span></div>
+    <div class="field-row"><strong>Department:</strong> <span id="department"></span></div>
+    <div class="field-row"><strong>Year/Class:</strong> <span id="yearClass"></span></div>
+    <div class="field-row"><strong>Aadhar No:</strong> <span id="aadharCard"></span></div>
+    <div class="field-row"><strong>Mobile:</strong> <span id="mobileNo"></span></div>
+    <div class="field-row"><strong>Parent Mobile:</strong> <span id="parentMobile"></span></div>
+    <div class="field-row"><strong>Address:</strong> <span id="address"></span></div>
+  </div>
+
+  <!-- RIGHT SECTION -->
+  <div class="right-section">
+    <h4>Bus Fees Paid Details</h4>
+    <img id="studentPhoto" class="student-photo" src="" alt="Student Photo">
+
+    <table class="table-fees table w-100">
+      <tr>
+        <th>Bus Route</th>
+        <td id="busRoute"></td>
+      </tr>
+      <tr>
+        <th>Collection Stop</th>
+        <td id="busStop"></td>
+      </tr>
+      <tr>
+        <th>Total Fees</th>
+        <td>Rs. <span id="busFees"></span></td>
+      </tr>
+      <tr>
+        <th>Payment Date</th>
+        <td id="busPaidDate"></td>
+      </tr>
+      <tr>
+        <th>Receipt No.</th>
+        <td id="busReceiptNo"></td>
+      </tr>
+    </table>
+
+    <div class="remarks">
+      <strong>Remarks (if any):</strong> <br>
+      <span id="remarksText"></span>
+    </div>
+  </div>
+</div>
+
+<!-- BUTTONS -->
+<div class="btn-group-custom">
+  <button class="btn btn-success" onclick="downloadPDF()">📥 Download PDF</button>
+  <button class="btn btn-primary" onclick="printPass()">🖨️ Print</button>
+  <button class="btn btn-secondary" onclick="goHome()">🏠 Back to Home</button>
+</div>
+
+<script>
+window.onload = () => {
+  const studentData = JSON.parse(localStorage.getItem("studentBusPass")); // ✅ Correct key name
+
+  if(studentData){
+    document.getElementById("studentName").textContent = studentData.name;
+    document.getElementById("collegeName").textContent = studentData.college;
+    document.getElementById("department").textContent = studentData.department;
+    document.getElementById("yearClass").textContent = studentData.yearClass;
+    document.getElementById("aadharCard").textContent = studentData.aadhar;
+    document.getElementById("mobileNo").textContent = studentData.mobile;
+    document.getElementById("parentMobile").textContent = studentData.parentMobile;
+    document.getElementById("address").textContent = studentData.address;
+    document.getElementById("busRoute").textContent = studentData.busRoute;
+    document.getElementById("busStop").textContent = studentData.busStop;
+    document.getElementById("busFees").textContent = studentData.busFees;
+    document.getElementById("busPaidDate").textContent = studentData.busPaidDate;
+    document.getElementById("busReceiptNo").textContent = studentData.busReceiptNo;
+
+    // ✅ Photo
+    if(studentData.photo && studentData.photo.trim() !== ""){
+      document.getElementById("studentPhoto").src = studentData.photo;
+    } else {
+      document.getElementById("studentPhoto").src = "assets/images/default_user.png"; 
+    }
+
+    // ✅ Remarks
+    document.getElementById("remarksText").textContent = 
+      (studentData.remarks && studentData.remarks.trim() !== "") ? studentData.remarks : "NIL";
+  } else {
+    alert("No registration data found. Please register first.");
+    window.location.href = "index.html";
+  }
+};
+
+// ✅ PDF Download (Stable with html2canvas)
+function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  html2canvas(document.getElementById('busPass')).then(canvas => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgWidth = 190;
+    const pageHeight = 295;
+    const imgHeight = canvas.height * imgWidth / canvas.width;
+    let heightLeft = imgHeight;
+    let position = 10;
+
+    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save('radhanagari_bus_pass.pdf'); // ✅ Updated file name
+  });
+}
+
+// ✅ Print
+function printPass() {
+  const printContents = document.getElementById('busPass').outerHTML;
+  const newWin = window.open('', '', 'width=800,height=600');
+  newWin.document.write('<html><head><title>Print Radhanagari Bus Pass</title>');
+  newWin.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">');
+  newWin.document.write('</head><body>');
+  newWin.document.write(printContents);
+  newWin.document.write('</body></html>');
+  newWin.document.close();
+  newWin.focus();
+  newWin.print();
+  newWin.close();
+}
+
+// ✅ Back to Home
+function goHome() {
+  window.location.href = "mal_Bus_Routes_Schedule.html";
+}
+</script>
+
+</body>
+</html>

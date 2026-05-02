@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Driver Live Tracking & Student Attendance</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; display:flex; }
+    .sidebar { width:220px; background:#343a40; color:#fff; height:100vh; position:fixed; padding-top:20px;}
+    .sidebar a{ color:#fff; display:block; padding:12px 20px; text-decoration:none; }
+    .sidebar a:hover{ background:#495057;}
+    .main-content{ margin-left:220px; padding:20px; width:calc(100% - 220px);}
+    .card{ border-radius:10px; }
+    #driverMap { width:100%; height:300px; border-radius:10px; }
+  </style>
+</head>
+
+<body>
+
+ <div class="sidebar">
+     <h4>Menu</h4>
+    <a href="Senapati_dashboard.html">🏠 Dashboard</a>
+    <a href="Sena_stud_form.html">📝 Student Registration</a>
+    <a href="Sena_bus_Routes_Schedule.html">🚌 Bus Routes</a>
+    <a href="Sena_driver_details.html">👨‍✈️ Driver</a>
+    <a href="Sena_support.html">🆘 Support</a>
+    <a href="Sena_notification.html">🔔 Notifications</a>
+    <a href="Sena_setting.html" class="active">⚙️ Settings</a>
+    <a href="index.html">🏠 Back to Home</a>
+  </div>
+
+<div class="main-content">
+
+<h2 class="text-center">👨‍✈ Driver & 📍 Live Tracking</h2>
+
+<div class="row">
+
+<!-- LEFT -->
+<div class="col-md-6">
+
+<div class="card p-3 text-center">
+  <h4>Mr. Sandeep Garule</h4>
+  <p><b>Contact:</b> +91 7774848090</p>
+  <p><b>Bus No:</b>  MH-09 GJ  4822</p>
+  <p><b>Route:</b> Senapati-Kapashi → Kolhapur</p>
+</div>
+
+<div class="card p-3 mt-3">
+  <h5 class="text-center">📍 Live Location</h5>
+
+  <div id="driverMap"></div>
+
+  <p class="text-center mt-2" id="driverCoords">⏳ Waiting for driver...</p>
+  <p class="text-center" id="driverTime"></p>
+  <p class="text-center" id="driverPlace"></p>
+</div>
+
+</div>
+
+<!-- RIGHT - ATTENDANCE -->
+<div class="col-md-6">
+  <div class="card p-3">
+    <h5>📝 Student Attendance</h5>
+
+    <form id="attendanceForm">
+      <label>Name:</label>
+      <input type="text" id="attName" class="form-control" required>
+
+      <label>Mobile:</label>
+      <input type="text" id="attMobile" class="form-control" required>
+
+      <label>Date:</label>
+      <input type="date" id="attDate" class="form-control" required>
+
+      <label class="mt-2">Status:</label><br>
+      <input type="radio" name="status" value="Present"> Present<br>
+      <input type="radio" name="status" value="Absent"> Absent<br>
+
+      <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </form>
+
+    <p id="formMessage" class="mt-2"></p>
+  </div>
+</div>
+
+</div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<script>
+// ================= FIREBASE =================
+const firebaseConfig = {
+  apiKey: "AIzaSyDfSe0P5e3G0ifXPZaXsWB8knSPVo8payE",
+  authDomain: "tracking-bus-29dd8.firebaseapp.com",
+  databaseURL:"https://tracking-bus-29dd8-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tracking-bus-29dd8",
+  storageBucket: "tracking-bus-29dd8.firebasestorage.app",
+  messagingSenderId: "733874281179",
+  appId: "1:733874281179:web:89873e7f72578c6da34afe"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ================= DRIVER =================
+const driverId = "7774848090";
+const driverRef = db.ref("drivers/" + driverId);
+
+// ================= MAP =================
+const map = L.map("driverMap").setView([0, 0], 2);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+let marker = L.marker([0, 0]).addTo(map);
+
+let pathPoints = [];
+let polyline = L.polyline(pathPoints, { color: "blue" }).addTo(map);
+
+// ================= TRACKING =================
+driverRef.on("value", async snap => {
+
+  if (!snap.exists()) {
+    document.getElementById("driverCoords").innerHTML = "No data available";
+    return;
+  }
+
+  const data = snap.val();
+
+  if (data.status === "inactive") {
+    document.getElementById("driverCoords").innerHTML = "🔴 Driver Offline";
+    document.getElementById("driverTime").innerHTML = "";
+    document.getElementById("driverPlace").innerHTML = "";
+    return;
+  }
+
+  const lat = data.lat;
+  const lng = data.lng;
+  const time = data.time;
+
+  marker.setLatLng([lat, lng]);
+  map.setView([lat, lng], 16);
+
+  if (pathPoints.length > 50) pathPoints.shift();
+  pathPoints.push([lat, lng]);
+  polyline.setLatLngs(pathPoints);
+
+  document.getElementById("driverCoords").innerHTML = "🚌 Bus is Live on Route";
+  document.getElementById("driverTime").innerHTML = `⏱ Last update: ${time}`;
+
+  if (!navigator.onLine) {
+    document.getElementById("driverPlace").innerHTML = "🌐 No Internet";
+    return;
+  }
+
+  setTimeout(async () => {
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+      const res = await fetch(url);
+      const json = await res.json();
+      const place = json.display_name || "Unknown";
+
+      document.getElementById("driverPlace").innerHTML = `📍 Location: ${place}`;
+    } catch {
+      document.getElementById("driverPlace").innerHTML = "📍 Location: Not Available";
+    }
+  }, 1000);
+
+});
+
+// ================= ATTENDANCE =================
+document.getElementById("attDate").value =
+  new Date().toISOString().split("T")[0];
+
+document.getElementById("attendanceForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  let name = document.getElementById("attName").value.trim();
+  let mobile = document.getElementById("attMobile").value.trim();
+  let date = document.getElementById("attDate").value;
+  let status = document.querySelector("input[name='status']:checked")?.value;
+
+  if (!status) {
+    document.getElementById("formMessage").innerHTML = "⚠️ Select status";
+    return;
+  }
+
+  let attendance = JSON.parse(localStorage.getItem("attendance")) || {};
+
+  if (attendance[mobile] && attendance[mobile].some(a => a.date === date)) {
+    document.getElementById("formMessage").innerHTML =
+      "⚠️ Already marked today!";
+    return;
+  }
+
+  if (!attendance[mobile]) {
+    attendance[mobile] = [];
+  }
+
+  attendance[mobile].push({ name, mobile, date, status });
+  localStorage.setItem("attendance", JSON.stringify(attendance));
+
+  document.getElementById("formMessage").innerHTML =
+    "✅ Attendance Saved";
+
+  document.getElementById("attendanceForm").reset();
+
+  document.getElementById("attDate").value =
+    new Date().toISOString().split("T")[0];
+});
+</script>
+
+</body>
+</html>

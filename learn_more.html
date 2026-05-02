@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bus Management System - Learn More</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top left, #1e1e2f, #252839, #1c1c2b);
+      color: #fff;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: linear-gradient(90deg, #4cd137, #32ff7e, #05c46b);
+      color: #1e1e2f;
+      text-align: center;
+      padding: 25px;
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: 0 6px 25px rgba(76, 209, 55, 0.5);
+      text-transform: uppercase;
+    }
+
+    section {
+      padding: 50px 10%;
+      animation: slideDown 1s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      color: #4cd137;
+      margin-bottom: 15px;
+      font-size: 1.8rem;
+      text-align: center;
+      text-shadow: 0 0 10px rgba(76, 209, 55, 0.6);
+    }
+
+    p {
+      color: #cfcfcf;
+      margin-bottom: 25px;
+      text-align: center;
+      font-size: 1.05rem;
+    }
+
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #2c2f38, #232533);
+      padding: 25px;
+      border-radius: 15px;
+      width: 290px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+      transition: all 0.4s ease;
+      text-align: center;
+      border: 1px solid rgba(76, 209, 55, 0.2);
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.03);
+      border: 1px solid #4cd137;
+      box-shadow: 0 0 20px rgba(76, 209, 55, 0.5);
+      background: linear-gradient(145deg, #33384b, #2c2f38);
+    }
+
+    .card h3 {
+      color: #4cd137;
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+      text-shadow: 0 0 8px rgba(76, 209, 55, 0.6);
+    }
+
+    .card p {
+      color: #bbb;
+      font-size: 0.95rem;
+    }
+
+    ul {
+      text-align: left;
+      margin: 25px auto;
+      color: #bbb;
+      max-width: 700px;
+      list-style: none;
+      font-size: 1rem;
+    }
+
+    ul li {
+      margin-bottom: 12px;
+      position: relative;
+      padding-left: 25px;
+    }
+
+    ul li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #4cd137;
+      font-weight: bold;
+    }
+
+    .btn {
+      display: inline-block;
+      background: linear-gradient(90deg, #4cd137, #32ff7e);
+      color: #1e1e2f;
+      padding: 14px 35px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 40px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(76, 209, 55, 0.5);
+    }
+
+    .btn:hover {
+      background: linear-gradient(90deg, #32ff7e, #4cd137);
+      box-shadow: 0 0 25px rgba(76, 209, 55, 0.8);
+      transform: scale(1.05);
+    }
+
+    footer {
+      background: #2c2f38;
+      text-align: center;
+      padding: 20px;
+      color: #aaa;
+      margin-top: 60px;
+      font-size: 0.9rem;
+      border-top: 1px solid rgba(76, 209, 55, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <header>🎓 Bus Management System - Learn More for Students</header>
+
+  <section>
+    <h2>About the System</h2>
+    <p>
+      The <strong>Bus Management System for Students</strong> helps students easily check bus routes, timings, and stop details. 
+      It ensures every student knows their bus schedule and travels safely and on time.
+    </p>
+
+    <h2>Key Features</h2>
+    <div class="card-container">
+      <div class="card">
+        <h3>🗺️ Route Information</h3>
+        <p>Check your assigned bus routes, stops, and destinations in a clear and visual format.</p>
+      </div>
+
+      <div class="card">
+        <h3>🕒 Daily Schedule</h3>
+        <p>Displays updated bus arrival and departure times to keep you on track every day.</p>
+      </div>
+
+      <div class="card">
+        <h3>👩‍🎓 Student Access</h3>
+        <p>Log in to see your bus number, pickup time, and driver details securely.</p>
+      </div>
+
+      <div class="card">
+        <h3>🚍 Real-Time Updates</h3>
+        <p>Get instant notifications about delays, route changes, or new schedules.</p>
+      </div>
+
+      <div class="card">
+        <h3>📋 Bus Details</h3>
+        <p>View information like driver name, contact number, and vehicle registration.</p>
+      </div>
+
+      <div class="card">
+        <h3>💡 User-Friendly Design</h3>
+        <p>Modern, clean, and easy-to-use interface designed especially for students.</p>
+      </div>
+    </div>
+
+    <h2>Benefits for Students</h2>
+    <ul>
+      <li>View bus route and stop details anytime.</li>
+      <li>Stay informed about any changes instantly.</li>
+      <li>Helps manage time efficiently.</li>
+      <li>Reduces confusion and waiting time.</li>
+      <li>Safer and smarter travel management.</li>
+    </ul>
+
+    <div style="text-align:center;">
+      <a href="index.html" class="btn">← Back to Home</a>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 Student Bus Management System | Designed for smart and safe travel.
+  </footer>
+
+</body>
+</html>

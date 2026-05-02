@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Driver Live Tracking Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+body { background: #eef2f3; font-family: 'Segoe UI'; }
+.navbar { background: linear-gradient(90deg, #2f4f4f, #3b7a57); }
+.navbar .navbar-brand { color: white; font-weight: 600; }
+.card { border-radius: 15px; box-shadow: 0 5px 12px rgba(0,0,0,0.1); }
+#map { width: 100%; height: 320px; border-radius: 10px; margin-top: 15px; }
+.btn-green { background: #198754; color: white; }
+.btn-grey { background: #6c757d; color: white; }
+.badge-status { padding: 6px 10px; border-radius: 8px; }
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="container-fluid">
+    <span class="navbar-brand">👨‍✈️ Driver Live Tracking Dashboard</span>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <div class="card p-4">
+
+    <h4 class="text-center text-success mb-3">Welcome, Mr. Sanjay Shinde</h4>
+
+    <p><strong>🚌 Bus No:</strong> MH-09 FL 7991</p>
+    <p><strong>📍 Route:</strong> Kagal ➝ Kolhapur</p>
+    <p><strong>📞 Mobile:</strong> 7887789683</p>
+
+    <div class="text-center">
+      <button id="startBtn" class="btn btn-green me-2">▶️ Start Live Sharing</button>
+      <button id="stopBtn" class="btn btn-grey" disabled>⏹ Stop Sharing</button>
+      <a href="kag_driver_details.html" target="_blank" class="btn btn-green ms-2">👁 View Admin Map</a>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="text-center mt-3">
+      <span id="statusBadge" class="badge bg-secondary badge-status">Inactive</span>
+      <p id="statusText">📍 Waiting for location...</p>
+      <p id="timeStamp"></p>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<script>
+// ================= FIREBASE =================
+const firebaseConfig = {
+  apiKey: "AIzaSyDfSe0P5e3G0ifXPZaXsWB8knSPVo8payE",
+  authDomain: "tracking-bus-29dd8.firebaseapp.com",
+  databaseURL: "https://tracking-bus-29dd8-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tracking-bus-29dd8",
+  storageBucket: "tracking-bus-29dd8.firebasestorage.app",
+  messagingSenderId: "733874281179",
+  appId: "1:733874281179:web:89873e7f72578c6da34afe"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const driverId = "7887789683";
+
+// ================= MAP =================
+let map = L.map("map");
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+let marker = null;
+let polyline = L.polyline([], { color: "green" }).addTo(map);
+
+let watchId = null;
+
+// ✅ Initial location fix
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(pos => {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+
+    map.setView([lat, lng], 15);
+    marker = L.marker([lat, lng]).addTo(map);
+  }, () => {
+    map.setView([16.2632, 74.4895], 12);
+  });
+}
+
+// ================= START =================
+document.getElementById("startBtn").onclick = () => {
+
+  if (!navigator.onLine) {
+    alert("⚠️ No Internet");
+    return;
+  }
+
+  watchId = navigator.geolocation.watchPosition(pos => {
+
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    const now = new Date().toLocaleTimeString();
+
+    if (!marker) {
+      marker = L.marker([lat, lng]).addTo(map);
+    } else {
+      marker.setLatLng([lat, lng]);
+    }
+
+    map.setView([lat, lng], 15);
+    polyline.addLatLng([lat, lng]);
+
+    db.ref("drivers/" + driverId).update({
+      lat,
+      lng,
+      timestamp: Date.now(),
+      status: "active"
+    });
+
+    document.getElementById("statusBadge").className = "badge bg-success badge-status";
+    document.getElementById("statusBadge").textContent = "Active";
+    document.getElementById("statusText").textContent = `🟢 ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    document.getElementById("timeStamp").textContent = `⏱ ${now}`;
+
+  }, handleLocationError, {
+    enableHighAccuracy: true,
+    timeout: 10000
+  });
+
+  document.getElementById("startBtn").disabled = true;
+  document.getElementById("stopBtn").disabled = false;
+};
+
+// ================= STOP =================
+document.getElementById("stopBtn").onclick = () => {
+
+  if (watchId) navigator.geolocation.clearWatch(watchId);
+
+  db.ref("drivers/" + driverId).update({
+    status: "inactive"
+  });
+
+  document.getElementById("statusBadge").className = "badge bg-secondary badge-status";
+  document.getElementById("statusBadge").textContent = "Inactive";
+
+  document.getElementById("startBtn").disabled = false;
+  document.getElementById("stopBtn").disabled = true;
+};
+
+// ================= ERROR =================
+function handleLocationError(error) {
+  let msg = "";
+
+  switch(error.code) {
+    case error.PERMISSION_DENIED:
+      msg = "❌ Permission denied";
+      break;
+    case error.POSITION_UNAVAILABLE:
+      msg = "⚠️ Location unavailable";
+      break;
+    case error.TIMEOUT:
+      msg = "⏳ Timeout";
+      break;
+  }
+
+  alert(msg);
+}
+</script>
+
+</body>
+</html>

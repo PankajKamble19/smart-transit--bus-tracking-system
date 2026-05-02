@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Your description">
+    <meta name="author" content="Your name">
+
+    <!-- OG Meta Tags to improve the way the post looks when you share the page on Facebook, Twitter, LinkedIn -->
+	<meta property="og:site_name" content="" /> <!-- website name -->
+	<meta property="og:site" content="" /> <!-- website link -->
+	<meta property="og:title" content=""/> <!-- title shown in the actual shared post -->
+	<meta property="og:description" content="" /> <!-- description shown in the actual shared post -->
+	<meta property="og:image" content="" /> <!-- image link, make sure it's jpg -->
+	<meta property="og:url" content="" /> <!-- where do you want your post to link to -->
+	<meta name="twitter:card" content="summary_large_image"> <!-- to have large image post format in Twitter -->
+
+    <!-- Webpage Title -->
+    <title>Bus Transport System </title>
+
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/fontawesome-all.min.css">
+<link rel="stylesheet" href="css/aos.min.css">
+<link rel="stylesheet" href="css/swiper.css">
+<link rel="stylesheet" href="css/style.css">
+    <!-- Favicon -->
+    <link rel="icon" href="./assets/images/favicon.png">
+</head>
+<body>
+    
+    <!-- Navigation -->
+<nav id="navbar" class="navbar navbar-expand-lg fixed-top navbar-dark" aria-label="Main navigation">
+    <div class="container">
+
+        <!-- Logo -->
+        <a class="navbar-brand logo-image" href="index.html">
+            <img src="assets/images/sym.jpg" alt="Logo" class="logo-img">
+        </a>
+
+        <style>
+        .logo-img {
+          height: 70px;          /* increased size */
+          width: auto;           /* keeps rectangular shape */
+          border-radius: 6px;    /* optional soft corners */
+          object-fit: contain;   /* fits image nicely */
+        }
+        /* Admin & Driver Login hover = Yellow */
+        .nav-item .btn-outline-light:hover {
+            background-color: #ffc107 !important; /* Yellow fill */
+            border-color: #ffc107 !important;
+            color: #000 !important;               /* Black text */
+        }
+        </style>
+
+        <!-- Toggle Button for Mobile -->
+        <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Items -->
+        <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav ms-auto navbar-nav-scroll">
+
+                <!-- Menu Items -->
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#header">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#services">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#plans">Plans</a>
+                </li>
+
+                <!-- Help & Support Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false" href="#">Help & Support</a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                        <li><a class="dropdown-item" href="article.html">Contact Transport Office</a></li>
+                        <li><div class="dropdown-divider"></div></li>
+                        <li><a class="dropdown-item" href="terms.html">Rules & Regulations</a></li>
+                        <li><div class="dropdown-divider"></div></li>
+                        
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#contact">Contact</a>
+                </li>
+
+                <!-- Admin Login -->
+                <li class="nav-item">
+                    <a class="btn btn-outline-light ms-3" href="admin_login.html">Admin Login</a>
+                </li>
+
+                <!-- ⭐ Updated Driver Login Dropdown (Bus 1–10) -->
+              <!-- Driver Login Dropdown as Button (Working) -->
+<li class="nav-item dropdown ms-3">
+    <button class="btn btn-outline-light dropdown-toggle"
+            id="driverDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+        Driver Login
+    </button>
+    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="driverDropdown">
+        <li><a class="dropdown-item" href="driver_login1.html">Bus No 1 Login</a></li>
+        <li><a class="dropdown-item" href="driver_login2.html">Bus No 2 Login</a></li>
+        <li><a class="dropdown-item" href="driver_login3.html">Bus No 3 Login</a></li>
+        <li><a class="dropdown-item" href="driver_login4.html">Bus No 4 Login</a></li>
+        <li><a class="dropdown-item" href="driver_login5.html">Bus No 5 Login</a></li>
+        <li><a class="dropdown-item" href="driver_login6.html">Bus No 6 Login</a></li>
+        <li><a class="dropdown-item" href="driver_login7.html">Bus No 7 Login</a></li>
+        <li><a class="dropdown-item" href="driver_login8.html">Bus No 8 Login</a></li>
+        <li><a class="dropdown-item" href="driver_login9.html">Bus No 9 Login</a></li>
+        <li><a class="dropdown-item" href="driver_login10.html">Bus No 10 Login</a></li>
+    </ul>
+</li>
+
+<!-- Make sure Bootstrap 5 JS is included at the end of body -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+                <!-- Social Icons -->
+                
+
+            </ul>
+        </div> <!-- end of navbar-collapse -->
+    </div> <!-- end of container -->
+</nav> <!-- end of navbar -->
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <!-- Home -->
+    <section class="home py-5 d-flex align-items-center" id="header">
+    <div class="container text-light py-5" data-aos="fade-right"> 
+        <!-- ✅ Heading -->
+        <h3 class="headline">
+            <span class="home_text">D. Y. Patil Pratishthan’s College of Engineering</span><br>
+            Smart Transit Manager - College Bus Transport System
+        </h3>
+
+        <!-- ✅ Description -->
+        <p class="para para-light py-3">
+            Welcome to the official <b>College Bus Transport System</b> of DYP, Salokhenagar, Kolhapur. 
+            Manage your daily commute with ease – explore routes, schedules, passes, and real-time updates designed 
+            for students.
+        </p>
+
+        <!-- ✅ Features -->
+        <div class="d-flex align-items-center">
+            <p class="p-2"><i class="fas fa-bus fa-lg"></i></p>
+            <p>Safe and reliable bus services across Kolhapur city.</p>  
+        </div>
+        <div class="d-flex align-items-center">
+            <p class="p-2"><i class="fas fa-route fa-lg"></i></p>
+            <p>Multiple routes covering student residential areas.</p>  
+        </div>
+        <div class="d-flex align-items-center">
+            <p class="p-2"><i class="fas fa-ticket-alt fa-lg"></i></p>
+            <p>Easy access to yearly bus passes for students.</p>  
+        </div>
+
+        <!-- ✅ Button -->
+        <div class="my-3">
+            <a class="btn btn-warning" href="#plans">View Bus Plans</a>
+        </div>
+    </div> <!-- end of container -->
+</section> <!-- end of home -->
+
+
+    <!-- Information -->
+    <section class="information">
+    <div class="container-fluid">  
+        <div class="row text-light">
+            <div class="col-lg-4 text-center p-5" data-aos="zoom-in">
+                <i class="fas fa-bus-alt fa-3x p-2"></i>
+                <h4 class="py-3">Safe & Comfortable Rides</h4>
+                <p class="para-light">Travel with peace of mind in our well-maintained buses with modern safety features.</p>
+            </div>
+            <div class="col-lg-4 text-center p-5"  data-aos="zoom-in">
+                <i class="fas fa-road fa-3x p-2"></i>
+                <h4 class="py-3">Extensive City Routes</h4>
+                <p class="para-light">Covering every major destination, our buses make commuting across the city convenient and fast.</p>
+            </div>
+            <div class="col-lg-4 text-center p-5 text-dark"  data-aos="zoom-in"> 
+                <i class="fas fa-clock fa-3x p-2"></i>
+                <h4 class="py-3">On-Time Service</h4>
+                <p class="para-light">We value your time – our buses run punctually to ensure a smooth travel experience.</p>
+            </div>
+        </div>
+    </div> <!-- end of container -->
+</section> <!-- end of information -->
+
+
+    <!-- About -->
+    <section class="about d-flex align-items-center text-light py-5" id="about">
+    <div class="container">
+        <div class="row d-flex align-items-center">
+            <div class="col-lg-7" data-aos="fade-right">
+                <p>ABOUT US</p>
+                <h3>Safe & Efficient Campus Bus <br> Service</h3>
+                <p class="py-2 para-light">
+                    Dr. D Y Patil Pratishthan's College of Engineering offers a dedicated bus transport system for students and staff traveling to and from Salokhenagar, Kolhapur. Our buses ensure a reliable and convenient commuting experience every day.
+                </p>
+                <p class="py-2 para-light">
+                    With modern vehicles, trained drivers, and strict adherence to schedules, our campus bus service emphasizes safety, comfort, and punctuality. We strive to make daily travel hassle-free for our college community.
+                </p>
+
+                <div class="my-3">
+                    <a class="btn" href="learn_more.html">Learn More</a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center py-4 py-sm-0" data-aos="fade-down"> 
+                <img class="img-fluid" src="./assets/images/about.jpg" alt="Campus Bus Service">
+            </div>
+        </div> <!-- end of row -->
+    </div> <!-- end of container -->
+</section> <!-- end of about -->
+
+
+
+    <!-- Services -->
+  <style>
+    /* Make all cards equal small size */
+    .bus-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 250px; /* fixed small size */
+        padding: 15px;
+    }
+    .bus-card p {
+        font-size: 14px;
+    }
+    .bus-card h4 {
+        font-size: 18px;
+    }
+    .bus-card i {
+        margin-bottom: 10px;
+    }
+</style>
+
+<section class="services d-flex align-items-center py-5" id="services">
+  <div class="container text-light">
+    <div class="text-center pb-4">
+      <p>OUR BUS ROUTES</p>
+      <h2 class="py-2">Campus Transport System</h2>
+      <p class="para-light">
+        Dr. D Y Patil Pratishthan's College of Engineering provides reliable bus services connecting students and staff to nearby towns and villages. Explore our 10 major bus routes for convenient travel.
+      </p>
+    </div>
+
+    <!-- 1st Row -->
+    <div class="row gy-4 justify-content-center" data-aos="zoom-in">
+      <div class="col-lg-2 col-md-4 col-sm-6 d-flex justify-content-center">
+        <div class="card bg-transparent text-center bus-card p-2">
+          <i class="fas fa-bus fa-2x mb-2"></i>
+          <h5>GARGOTI 01</h5>
+          <p class="para-light small">Daily buses connecting Gargoti to the college.</p>
+          <a class="btn btn-primary btn-sm mt-1" href="login_01.html">Book Now</a>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 d-flex justify-content-center">
+        <div class="card bg-transparent text-center bus-card p-2">
+          <i class="fas fa-bus fa-2x mb-2"></i>
+          <h5>RADHANAGARI 02</h5>
+          <p class="para-light small">Service for students from Radhanagari.</p>
+          <a class="btn btn-primary btn-sm mt-1" href="login_02.html">Book Now</a>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 d-flex justify-content-center">
+        <div class="card bg-transparent text-center bus-card p-2">
+          <i class="fas fa-bus fa-2x mb-2"></i>
+          <h5>KAGAL/NADIKINARA 03</h5>
+          <p class="para-light small">Safe daily service from Kagal.</p>
+          <a class="btn btn-primary btn-sm mt-1" href="login_03.html">Book Now</a>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 d-flex justify-content-center">
+        <div class="card bg-transparent text-center bus-card p-2">
+          <i class="fas fa-bus fa-2x mb-2"></i>
+          <h5>SALVAN GAGANBAWADA 04</h5>
+          <p class="para-light small">Travel from Salvan to campus.</p>
+          <a class="btn btn-primary btn-sm mt-1" href="login_04.html">Book Now</a>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 d-flex justify-content-center">
+        <div class="card bg-transparent text-center bus-card p-2">
+          <i class="fas fa-bus fa-2x mb-2"></i>
+          <h5>MALKAPUR 05</h5>
+          <p class="para-light small">Travel from Malkapur to campus.</p>
+          <a class="btn btn-primary btn-sm mt-1" href="login_05.html">Book Now</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2nd Row -->
+    <div class="row gy-4 justify-content-center mt-3" data-aos="zoom-in">
+      <div class="col-lg-2 col-md-4 col-sm-6 d-flex justify-content-center">
+        <div class="card bg-transparent text-center bus-card p-2">
+          <i class="fas fa-bus fa-2x mb-2"></i>
+          <h5>KOTOLI 06</h5>
+          <p class="para-light small">Timely service from Kotoli.</p>
+          <a class="btn btn-primary btn-sm mt-1" href="#">Book Now</a>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 d-flex justify-content-center">
+        <div class="card bg-transparent text-center bus-card p-2">
+          <i class="fas fa-bus fa-2x mb-2"></i>
+          <h5>DHAMOD 07</h5>
+          <p class="para-light small">Bus service from Dhamod.</p>
+          <a class="btn btn-primary btn-sm mt-1" href="#">Book Now</a>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 d-flex justify-content-center">
+        <div class="card bg-transparent text-center bus-card p-2">
+          <i class="fas fa-bus fa-2x mb-2"></i>
+          <h5>SENAPATI-KAPASHI 08</h5>
+          <p class="para-light small">Bus service from Senapati-Kapashi.</p>
+          <a class="btn btn-primary btn-sm mt-1" href="#">Book Now</a>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 d-flex justify-content-center">
+        <div class="card bg-transparent text-center bus-card p-2">
+          <i class="fas fa-bus fa-2x mb-2"></i>
+          <h5>HUPARI-YALGUD 09</h5>
+          <p class="para-light small">Bus service from Kuditre.</p>
+          <a class="btn btn-primary btn-sm mt-1" href="#">Book Now</a>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-4 col-sm-6 d-flex justify-content-center">
+        <div class="card bg-transparent text-center bus-card p-2">
+          <i class="fas fa-bus fa-2x mb-2"></i>
+          <h5>ICHALKARANJI 10</h5>
+          <p class="para-light small">Service for students from Ichalkaranji.</p>
+          <a class="btn btn-primary btn-sm mt-1" href="#">Book Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bus-card {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .bus-card:hover {
+    transform: translateY(-6px);
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  }
+
+  .bus-card i {
+    color: #ffc107;
+  }
+
+  .bus-card h5 {
+    font-size: 1rem;
+  }
+
+  .bus-card p {
+    font-size: 0.85rem;
+  }
+
+  /* 5 cards per row */
+  .col-lg-2 {
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+
+  /* Tablet View */
+  @media (max-width: 992px) {
+    .col-lg-2 {
+      flex: 0 0 33.33%;
+      max-width: 33.33%;
+    }
+  }
+
+  /* Mobile View */
+  @media (max-width: 768px) {
+    .col-lg-2 {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+  }
+</style>
+
+
+
+    <!-- Plans -->
+    <section class="plans d-flex align-items-center py-5" id="plans">
+  <div class="container text-light">
+    <div class="text-center pb-4">
+      <p>OUR PLANS</p>
+      <h2 class="py-2">Bus Transport System Plans</h2>
+      <p class="para-light">Choose the plan that best suits your travel needs.</p>
+    </div>
+
+    <div class="row gy-4" data-aos="zoom-in">
+      <!-- 6 Month Plan -->
+      <div class="col-lg-6">
+        <div class="card bg-transparent px-4 d-flex flex-column h-100">
+          <h4 class="py-2">6 MONTH PLAN</h4>
+          <div class="block d-flex align-items-center">
+            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
+            <p>Unlimited travel on assigned routes</p>
+          </div>
+          <div class="block d-flex align-items-center">
+            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
+            <p>Priority seat booking</p>
+          </div>
+          <div class="block d-flex align-items-center">
+            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
+            <p>Valid for 6 months from activation</p>
+          </div>
+          <div class="block d-flex align-items-center">
+            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
+            <p><b>Exclusive for B.Tech Students</b></p>
+          </div>
+          <div class="block d-flex align-items-center">
+            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
+            <p>Option to upgrade to yearly plan anytime</p>
+          </div>
+          <!-- Button at bottom -->
+          
+        </div>
+      </div>
+
+      <!-- Year Plan -->
+      <div class="col-lg-6">
+        <div class="card bg-transparent px-4 d-flex flex-column h-100">
+          <h4 class="py-2">YEAR PLAN</h4>
+          <div class="block d-flex align-items-center">
+            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
+            <p>Unlimited travel across all routes</p>
+          </div>
+          <div class="block d-flex align-items-center">
+            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
+            <p>Priority seat booking guaranteed</p>
+          </div>
+          <div class="block d-flex align-items-center">
+            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
+            <p>Valid for 12 months from activation</p>
+          </div>
+          <div class="block d-flex align-items-center">
+            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
+            <p>Free travel insurance included</p>
+          </div>
+          <div class="block d-flex align-items-center">
+            <p class="pe-2"><i class="far fa-check-circle fa-1x"></i></p>
+            <p>Exclusive offers for yearly members</p>
+          </div>
+          <!-- Button at bottom -->
+          
+        </div>
+      </div>
+    </div> <!-- end of row -->
+  </div> <!-- end of container -->
+</section>
+
+
+
+    <!-- Work -->
+    <section class="work d-flex align-items-center py-5">
+  <div class="container-fluid text-light">
+    <div class="row">
+      <!-- Image side -->
+      <div class="col-lg-6 d-flex align-items-center" data-aos="fade-right">
+        <img class="img-fluid" src="./assets/images/work.jpg" alt="bus transport system">        
+      </div>
+
+      <!-- Content side -->
+      <div class="col-lg-5 d-flex align-items-center px-4 py-3">
+        <div class="row">
+          <div class="text-center text-lg-start py-4 pt-lg-0">
+            <p>OUR TRANSPORT SYSTEM</p>
+            <h2 class="py-2">Reliable College Bus Service</h2>
+            <p class="para-light">
+              Dr. D Y Patil Pratishthan's College of Engineering ensures safe, reliable, and punctual bus transport connecting students and staff from nearby cities and villages.
+            </p>
+          </div>
+
+          <div class="container" data-aos="fade-up">
+            <div class="row g-5">
+              <!-- Buses -->
+              <div class="col-6 text-start">
+                <i class="fas fa-bus fa-2x text-start"></i>
+                <h2 class="purecounter" data-purecounter-start="0" data-purecounter-end="10" data-purecounter-duration="3">1</h2>
+                <p>BUSES IN SERVICE</p>
+              </div>
+
+              <!-- Routes -->
+              <div class="col-6">
+                <i class="fas fa-route fa-2x"></i>
+                <h2 class="purecounter" data-purecounter-start="0" data-purecounter-end="10" data-purecounter-duration="3">1</h2>
+                <p>ROUTES COVERED</p>
+              </div>
+
+              <!-- Students -->
+              <div class="col-6">
+                <i class="fas fa-users fa-2x"></i>
+                <h2 class="purecounter" data-purecounter-start="0" data-purecounter-end="400" data-purecounter-duration="3">1</h2>
+                <p>STUDENTS DAILY</p>
+              </div>
+
+              <!-- On-time performance -->
+              <div class="col-6">
+                <i class="fas fa-clock fa-2x"></i>
+                <h2 class="purecounter" data-purecounter-start="0" data-purecounter-end="98" data-purecounter-duration="3">1</h2>
+                <p>% ON-TIME ARRIVAL</p>
+              </div>
+            </div>
+          </div> <!-- end of container -->
+        </div> <!-- end of row -->
+      </div> <!-- end of col-lg-5 -->
+    </div> <!-- end of row -->
+  </div> <!-- end of container -->
+</section> <!-- end of work -->
+
+
+    <!-- Contact -->
+    <section class="contact d-flex align-items-center py-5" id="contact">
+        <div class="container-fluid text-light">
+            <div class="row">
+                <div class="col-lg-6 d-flex justify-content-center justify-content-lg-end align-items-center px-lg-5" data-aos="fade-right">
+                    <div style="width:90%">
+                        <div class="text-center text-lg-start py-4 pt-lg-0">
+                            <p>CONTACT</p>
+                            <h2 class="py-2">Send your feedback</h2>
+                            <p class="para-light">D. Y. Patil Pratishthan’s College of Engineering</p>
+                        </div>
+                        <div>
+                            <div class="row" >
+                                <div class="col-lg-6">
+                                    <div class="form-group py-2">
+                                        <input type="text" class="form-control form-control-input" id="exampleFormControlInput1" placeholder="Enter name">
+                                    </div>                                
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group py-2">
+                                        <input type="email" class="form-control form-control-input" id="exampleFormControlInput2" placeholder="Enter phone number">
+                                    </div>                                 
+                                </div>
+                            </div>
+                            <div class="form-group py-1">
+                                <input type="email" class="form-control form-control-input" id="exampleFormControlInput3" placeholder="Enter email">
+                            </div>  
+                            <div class="form-group py-2">
+                                <textarea class="form-control form-control-input" id="exampleFormControlTextarea1" rows="6" placeholder="Message"></textarea>
+                            </div>                            
+                        </div>
+                        <div class="my-3">
+                            <a class="btn form-control-submit-button" href="feedback.html">Submit</a>
+                        </div>
+                    </div> <!-- end of div -->
+               </div> <!-- end of col -->
+<div class="col-lg-6 d-flex align-items-center flex-column" data-aos="fade-down">
+    <script>
+  // Handle feedback submission
+  document.querySelector('.form-control-submit-button').addEventListener('click', function (event) {
+    event.preventDefault();
+
+    // Get field values
+    const name = document.getElementById('exampleFormControlInput1').value.trim();
+    const phone = document.getElementById('exampleFormControlInput2').value.trim();
+    const email = document.getElementById('exampleFormControlInput3').value.trim();
+    const message = document.getElementById('exampleFormControlTextarea1').value.trim();
+
+    // Validate form
+    if (!name || !phone || !email || !message) {
+      alert("Please fill in all fields before submitting.");
+      return;
+    }
+
+    // Prepare feedback object
+    const feedback = {
+      name,
+      phone,
+      email,
+      message,
+      date: new Date().toLocaleString()
+    };
+
+    // Save to localStorage
+    const feedbacks = JSON.parse(localStorage.getItem('feedbacks')) || [];
+    feedbacks.push(feedback);
+    localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+
+    // Confirmation
+    alert("Thank you for your feedback!");
+
+    // Redirect to feedback records page
+    window.location.href = "feedback.html";
+  });
+</script>
+
+
+
+    <!-- Map Title with Symbol -->
+    <h4 class="mb-3">
+        <i class="fas fa-map-marker-alt text-danger"></i> Our Location
+    </h4>
+
+    <!-- Google Map Embed -->
+ <div class="map-container" style="width:100%; max-width:100%; border-radius:10px; overflow:hidden;">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3812.875944239015!2d74.23215367492447!3d16.661184484169122!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc1009d2d35c20d%3A0x4b2e34a3dbd0e5e5!2sDr.%20D.Y.%20Patil%20Pratishthan%E2%80%99s%20College%20of%20Engineering%2C%20Kolhapur!5e0!3m2!1sen!2sin!4v1730707777777!5m2!1sen!2sin"
+    width="100%"
+    height="400"
+    style="border:0;"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+</div>
+
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </section> <!-- end of contact -->
+
+
+    <!-- Location -->
+    <section class="location text-light py-5">
+    <div class="container" data-aos="zoom-in">
+        <div class="row">
+
+            <!-- Bus Office Address -->
+            <div class="col-lg-3 d-flex align-items-center">
+                <div class="p-2"><i class="far fa-map fa-3x"></i></div>
+                <div class="ms-2">
+                    <h6>TRANSPORT OFFICE</h6>
+                    <p>Dr. D. Y. Patil Pratishthan’s College of Engineering, 
+                       Salokhenagar, Kolhapur, Maharashtra 416007</p>
+                </div>
+            </div>
+
+            <!-- Transport Contact Number -->
+            <div class="col-lg-3 d-flex align-items-center">
+                <div class="p-2"><i class="fas fa-mobile-alt fa-3x"></i></div>
+                <div class="ms-2">
+                    <h6>CALL FOR BUS QUERY</h6>
+                    <p>+91 0231-2601433</p>
+                </div>
+            </div>
+
+            <!-- Transport Email -->
+            <div class="col-lg-3 d-flex align-items-center">
+                <div class="p-2"><i class="far fa-envelope fa-3x"></i></div>
+                <div class="ms-2">
+                    <h6>EMAIL SUPPORT</h6>
+                    <p>transport@dypcoe.edu.in</p>
+                </div>
+            </div>
+
+            <!-- Transport Office Hours -->
+            <div class="col-lg-3 d-flex align-items-center">
+                <div class="p-2"><i class="far fa-clock fa-3x"></i></div>
+                <div class="ms-2">
+                    <h6>TRANSPORT OFFICE HOURS</h6>
+                    <p>09:15 AM - 04:15 PM</p>
+                </div>
+            </div>
+
+        </div> <!-- end of row -->
+    </div> <!-- end of container -->
+</section> <!-- end of location -->
+
+    <!-- Footer -->
+    <section class="footer text-light">
+        <div class="container">
+            <div class="row" data-aos="fade-right">
+                <div class="col-lg-3 py-4 py-md-5">
+                    <div class="d-flex align-items-center">
+                        <h4 class="">D. Y. Patil Pratishthan’s College of Engineering</h4>
+                    </div>
+                    <p class="py-3 para-light">Located on Kolhapur’s Kalamba Ring Road, D. Y. Patil Pratishthan’s College of Engineering is dedicated to providing
+          quality technical education with a focus on innovation, research, and holistic development of students.</p>
+                    <div class="d-flex">
+                        <div class="me-3">
+                            
+                            </a>
+                        </div>
+                    </div>
+                </div> <!-- end of col -->
+
+                <div class="col-lg-3 py-4 py-md-5">
+                    <div>
+                        <h4 class="py-2">Quick Links</h4>
+                        <div class="d-flex align-items-center py-2">
+                            <i class="fas fa-caret-right"></i>
+                            <a href="#about"><p class="ms-3">About</p></a>
+                        </div>
+                        <div class="d-flex align-items-center py-2">
+                            <i class="fas fa-caret-right"></i>
+                            <a href="#"><p class="ms-3">Services</p></a>
+                        </div>
+                        <div class="d-flex align-items-center py-2">
+                            <i class="fas fa-caret-right"></i>
+                            <a href="#"><p class="ms-3">Plans</p></a>
+                        </div>
+                        <div class="d-flex align-items-center py-2">
+                            <i class="fas fa-caret-right"></i>
+                            <a href="#"><p class="ms-3">Contact</p></a>
+                        </div>
+                    </div>
+                </div> <!-- end of col -->
+
+                <div class="col-lg-3 py-4 py-md-5">
+                    <div>
+                        <h4 class="py-2">Useful Links</h4>
+                        <div class="d-flex align-items-center py-2">
+                            <i class="fas fa-caret-right"></i>
+                            <a href="privacy.html"><p class="ms-3">Privacy</p></a>
+                            
+                        </div>
+                        <div class="d-flex align-items-center py-2">
+                            <i class="fas fa-caret-right"></i>
+                            <a href="terms.html"><p class="ms-3">Terms</p></a>
+                        </div>
+                        <div class="d-flex align-items-center py-2">
+                            <i class="fas fa-caret-right"></i>
+                            <a href="Disclaimer.html"><p class="ms-3">Disclaimer</p></a>
+                        </div>
+                        <div class="d-flex align-items-center py-2">
+                            <i class="fas fa-caret-right"></i>
+                            <a href="FAQ.html"><p class="ms-3">FAQ</p></a>
+                        </div>
+                    </div>
+                </div> <!-- end of col -->
+
+                <div class="col-lg-3 py-4 py-md-5">
+                    <div class="d-flex align-items-center">
+                        <h4>Newsletter</h4>
+                    </div>
+                    <p class="py-3 para-light">Stay connected with D. Y. Patil Pratishthan’s College of Engineering for the latest news, campus updates, and upcoming events.</p>
+                    <div class="d-flex align-items-center">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control p-2" placeholder="Enter Email" aria-label="Recipient's email">
+                            <button class="btn-secondary text-light"><i class="fas fa-envelope fa-lg"></i></button>       
+                        </div>
+                    </div>
+                </div> <!-- end of col -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </section> <!-- end of footer -->
+
+
+    <!-- Bottom -->
+    <div class="bottom py-2 text-light" >
+        <div class="container d-flex justify-content-between">
+            <div>
+                <p>Copyright © sakshi kalekar</p><br>
+               
+            </div>
+            <div>
+                
+            </div>
+        </div> <!-- end of container -->
+    </div> <!-- end of bottom -->
+ 
+    
+    <!-- Back To Top Button -->
+    <button onclick="topFunction()" id="myBtn">
+        <img src="assets/images/up-arrow.png" alt="alternative">
+    </button>
+    <!-- end of back to top button -->
+
+    
+    <!-- Scripts -->
+    <script src="./js/bootstrap.min.js"></script><!-- Bootstrap framework -->
+    <script src="./js/purecounter.min.js"></script> <!-- Purecounter counter for statistics numbers -->
+    <script src="./js/swiper.min.js"></script><!-- Swiper for image and text sliders -->
+    <script src="./js/aos.js"></script><!-- AOS on Animation Scroll -->
+    <script src="./js/script.js"></script>  <!-- Custom scripts -->
+</body>
+</html>

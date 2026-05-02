@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration Dashboard</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+  <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #212529;
+      --card-bg: #ffffff;
+      --card-text: #212529;
+      --sidebar-bg: #212529;
+      --sidebar-text: #adb5bd;
+      --sidebar-hover: #343a40;
+    }
+
+    .dark-mode {
+      --bg-color: #121212;
+      --text-color: #f1f1f1;
+      --card-bg: #1e1e1e;
+      --card-text: #f1f1f1;
+      --sidebar-bg: #1c1c1c;
+      --sidebar-text: #ccc;
+      --sidebar-hover: #333;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      min-height: 100vh;
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Segoe UI', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar {
+      width: 250px;
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      padding: 20px;
+      flex-shrink: 0;
+      transition: width 0.3s;
+    }
+
+    .sidebar.collapsed { width: 80px; }
+
+    .sidebar h4 {
+      color: #f8f9fa;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+
+    .sidebar a {
+      display: block;
+      color: var(--sidebar-text);
+      text-decoration: none;
+      padding: 10px 0;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      color: white;
+      background: var(--sidebar-hover);
+      padding-left: 15px;
+    }
+
+    .sidebar.collapsed a {
+      text-align: center;
+      padding-left: 0;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 20px 40px;
+      transition: margin-left 0.3s;
+      position: relative;
+    }
+
+    .main-content.collapsed { margin-left: 80px; }
+
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .driver-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-left: 10px;
+      cursor: pointer;
+      border: 2px solid #fff;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .mode-toggle {
+      cursor: pointer;
+      font-size: 24px;
+    }
+
+    .driver-card {
+      position: absolute;
+      top: 80px;
+      right: 20px;
+      width: 250px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .driver-card .card {
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .form-container {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .form-title {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--text-color);
+    }
+
+    #qrCode {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 15px auto;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar -->
+   <div class="sidebar">
+     <h4>Menu</h4>
+    <a href="ichal_dashboard.html">🏠 Dashboard</a>
+    <a href="ichal_stud_form.html">📝 Student Registration</a>
+    <a href="ichal_Bus_Routes_Schedule.html">🚌 Bus Routes</a>
+    <a href="ichal_driver_details.html">👨‍✈️ Driver</a>
+    <a href="ichal_support.html">🆘 Support</a>
+    <a href="ichal_notification.html">🔔 Notifications</a>
+    <a href="ichal_setting.html" class="active">⚙️ Settings</a>
+    <a href="index.html">🏠 Back to Home</a>
+  </div>
+
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <div class="topbar">
+      <span class="mode-toggle" id="modeToggle">🌙</span>
+      <img src="assets/images/gar_bus.jpeg" alt="Driver" class="driver-img" id="driverBtn">
+    </div>
+
+    <!-- Driver Info Card -->
+    <div class="driver-card" id="driverCard">
+      <div class="card">
+        <img src="assets/images/gar_bus.jpeg" alt="Driver" class="img-fluid rounded-top">
+        <div class="card-body">
+          <h5 class="card-title">Mr.Dasharath Kumbhar</h5>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Age: 45</li>
+            <li class="list-group-item">Experience: 12 Years</li>
+            <li class="list-group-item">Contact: +91 9096822087</li>
+            <li class="list-group-item">Route: Gargoti → Kolhapur</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container mt-4">
+      <h2 class="form-title">Student Registration Form</h2>
+      <form id="registrationForm">
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label for="studentName" class="form-label">Student Name</label>
+            <input type="text" class="form-control" id="studentName" placeholder="Enter Student Name" required>
+          </div>
+          <div class="mb-3 col-md-6">
+            <label for="collegeName" class="form-label">College Name</label>
+            <input type="text" class="form-control" id="collegeName" value="D. Y. Patil Pratishthan’s College of Engineering" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label for="department" class="form-label">Department</label>
+            <input type="text" class="form-control" id="department" placeholder="Enter Department" required>
+          </div>
+          <div class="mb-3 col-md-6">
+            <label for="yearClass" class="form-label">Year / Class</label>
+            <input type="text" class="form-control" id="yearClass" placeholder="Enter Year / Class" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="mobileNo" class="form-label">Mobile No.</label>
+          <input type="text" class="form-control" id="mobileNo" placeholder="Enter Mobile Number" maxlength="10" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="parentMobileNo" class="form-label">Parent's Mobile No.</label>
+          <input type="text" class="form-control" id="parentMobileNo" placeholder="Enter Parent's Mobile Number" maxlength="10" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="aadharCard" class="form-label">AADHAR Card No.</label>
+          <input type="text" class="form-control" id="aadharCard" placeholder="Enter Aadhar Card Number" maxlength="12" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="permanentAddress" class="form-label">Permanent Address</label>
+          <textarea class="form-control" id="permanentAddress" rows="2" placeholder="Enter Permanent Address (max 50 words)" required></textarea>
+        </div>
+
+        <hr>
+        <h5>Bus Details</h5>
+
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label for="busRouteName" class="form-label">Bus Route Name</label>
+            <input type="text" class="form-control" id="busRouteName" value="Ichakaranji-Kolhapur" required>
+          </div>
+          <div class="mb-3 col-md-6">
+            <label for="busCollectionStop" class="form-label">Bus Collection Stop</label>
+            <input type="text" class="form-control" id="busCollectionStop" placeholder="Enter Collection Stop" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="mb-3 col-md-4">
+            <label for="busFees" class="form-label">Bus Fees (Rs.)</label>
+            <input type="number" class="form-control" id="busFees" placeholder="Enter Bus Fees" required>
+          </div>
+          <div class="mb-3 col-md-4">
+            <label for="busPaidDate" class="form-label">Date of Payment</label>
+            <input type="date" class="form-control" id="busPaidDate" required>
+          </div>
+          <div class="mb-3 col-md-4">
+            <label for="busReceiptNo" class="form-label">Receipt No.</label>
+            <input type="text" class="form-control" id="busReceiptNo" placeholder="Auto Generated" readonly required>
+          </div>
+        </div>
+
+        <div class="mb-3 text-center">
+          <label class="form-label">Payment QR Code</label>
+          <div id="qrCode"></div>
+          <small class="text-muted">⚠️ Please scan this QR to pay bus fees</small>
+        </div>
+
+        <!-- 📄 Upload Fee Receipt -->
+        <div class="mb-3 text-center">
+          <label for="feeReceipt" class="form-label">Upload Fee Receipt</label>
+          <input class="form-control" type="file" id="feeReceipt" accept="image/*,application/pdf" required>
+          <img id="receiptPreview" src="" alt="Receipt Preview" style="margin-top:10px; max-width:150px; display:none;">
+        </div>
+
+        <!-- 📸 Upload Photo -->
+        <div class="mb-3 text-center">
+          <label for="photo" class="form-label">Upload Photo</label>
+          <input class="form-control" type="file" id="photo" accept="image/*" required>
+          <img id="previewImg" src="" alt="Preview" style="margin-top:10px; max-width:150px; display:none;">
+        </div>
+
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn btn-primary btn-lg">Submit Registration</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ✅ Fixed Script -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    // 🌙 Dark/Light Mode
+    const toggle = document.getElementById('modeToggle');
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      toggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    });
+
+    // 📸 Photo Preview Fix
+    const photoInput = document.getElementById('photo');
+    const previewImg = document.getElementById('previewImg');
+    photoInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          previewImg.src = event.target.result;
+          previewImg.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // 📄 Fee Receipt Preview Fix
+    const feeReceiptInput = document.getElementById('feeReceipt');
+    const receiptPreview = document.getElementById('receiptPreview');
+    feeReceiptInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          receiptPreview.src = event.target.result;
+          receiptPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        receiptPreview.style.display = 'none';
+      }
+    });
+
+    // 👨‍✈️ Driver Card Toggle
+    const driverBtn = document.getElementById('driverBtn');
+    const driverCard = document.getElementById('driverCard');
+    driverBtn.addEventListener('click', () => {
+      driverCard.style.display = driverCard.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', e => {
+      if (!driverCard.contains(e.target) && !driverBtn.contains(e.target)) {
+        driverCard.style.display = 'none';
+      }
+    });
+
+    // 🗓️ Auto Fill Date
+    document.getElementById('busPaidDate').value = new Date().toISOString().split('T')[0];
+
+    // 🧾 Auto Increment Receipt No
+    function generateReceiptNo() {
+      let lastNo = parseInt(localStorage.getItem("lastReceiptNo")) || 0;
+      lastNo += 1;
+      localStorage.setItem("lastReceiptNo", lastNo);
+      return "DY" + String(lastNo).padStart(4, '0');
+    }
+    document.getElementById("busReceiptNo").value = generateReceiptNo();
+
+    // 💰 Generate QR
+    function generateUpiQR() {
+      const fees = document.getElementById("busFees").value || "0";
+      const upiId = "sakshikalekar96@okaxis";
+      const studentName = "Bus Fees Payment";
+      const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(studentName)}&am=${fees}&cu=INR`;
+      document.getElementById("qrCode").innerHTML = "";
+      new QRCode(document.getElementById("qrCode"), {
+        text: upiUrl,
+        width: 200,
+        height: 200
+      });
+    }
+    generateUpiQR();
+    document.getElementById("busFees").addEventListener("input", generateUpiQR);
+
+    // 💰 Auto Bus Fees Based on Stop
+    const busStopInput = document.getElementById("busCollectionStop");
+    const busFeesInput = document.getElementById("busFees");
+
+    const stopFees = {
+      "madilage": 20500,
+      "kur": 20000,
+      "mudal-titta": 18000,
+      "bidri": 17000,
+      "chandre": 16000,
+      "turambe": 15000,
+      "shelewadi": 14000,
+      "chuye": 13000,
+      "dindnerli": 12000,
+      "jaital": 11000
+    };
+
+    busStopInput.addEventListener("input", () => {
+      const stopName = busStopInput.value.trim().toLowerCase();
+      if (stopFees[stopName] !== undefined) {
+        busFeesInput.value = stopFees[stopName];
+        generateUpiQR();
+      }
+    });
+
+    // ✅ Form Submit
+    document.getElementById('registrationForm').addEventListener('submit', e => {
+      e.preventDefault();
+
+      const address = document.getElementById('permanentAddress').value.trim();
+      const wordCount = address.split(/\s+/).length;
+      if (wordCount > 50) {
+        alert(`Permanent Address cannot exceed 50 words. Current: ${wordCount}`);
+        return;
+      }
+
+      const studentData = {
+        name: studentName.value,
+        college: collegeName.value,
+        department: department.value,
+        yearClass: yearClass.value,
+        aadhar: aadharCard.value,
+        mobile: mobileNo.value,
+        parentMobile: parentMobileNo.value,
+        address,
+        busRoute: busRouteName.value,
+        busStop: busCollectionStop.value,
+        busFees: busFees.value,
+        busPaidDate: busPaidDate.value,
+        busReceiptNo: busReceiptNo.value,
+        remarks: "",
+        photo: previewImg.src,
+        feeReceipt: receiptPreview.src
+      };
+
+      localStorage.setItem("studentBusPass", JSON.stringify(studentData));
+      alert("✅ Registration submitted successfully! Redirecting to Bus Pass...");
+      window.location.href = "gar_bus_pass.html";
+    });
+  </script>
+</body>
+</html>

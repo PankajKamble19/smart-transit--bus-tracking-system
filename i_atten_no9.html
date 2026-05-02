@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Attendance Records (All Routes)</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body{
+      font-family:'Poppins',sans-serif;
+      background-color:#f4f6f8;
+      display:flex;
+      margin:0;
+    }
+
+    .sidebar{
+      width:250px;
+      height:100vh;
+      background:#3a3b3c;
+      color:white;
+      display:flex;
+      flex-direction:column;
+      padding:20px;
+      position:fixed;
+    }
+
+    .sidebar h2{
+      color:#4cd137;
+      text-align:center;
+      margin-bottom:30px;
+      font-size:20px;
+    }
+
+    .sidebar a{
+      text-decoration:none;
+      color:white;
+      padding:12px;
+      margin:6px 0;
+      border-radius:8px;
+      background:#4d4d4d;
+      text-align:center;
+      transition:0.3s;
+      font-weight:500;
+    }
+
+    .sidebar a:hover{
+      background:#4cd137;
+      color:#1e1e2f;
+    }
+
+    .sidebar a.active{
+      background:#4cd137;
+      color:#1e1e2f;
+    }
+
+    .main-content{
+      margin-left:250px;
+      padding:30px;
+      width:calc(100% - 250px);
+    }
+
+    .table-container{
+      background:white;
+      border-radius:12px;
+      padding:25px;
+      box-shadow:0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .chart-wrapper{
+      width:100%;
+      height:400px;
+      background:#fff;
+      border-radius:10px;
+      padding:15px;
+    }
+
+    canvas{
+      width:100% !important;
+      height:100% !important;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>🚌 Bus Admin</h2>
+  <a href="#">Student Records</a>
+  <a href="#" class="active">Attendance</a>
+  <a href="#">Bus Schedule</a>
+</div>
+
+<!-- Main -->
+<div class="main-content">
+  <div class="table-container">
+
+    <h2 class="text-center">🗓️ Attendance Management (All Routes)</h2>
+
+    <div class="mb-3">
+      <label class="fw-bold">Select Chart Type:</label>
+      <select id="chartType" class="form-control">
+        <option value="bar">Daily Bar Chart</option>
+        <option value="line">Weekly Line Chart</option>
+      </select>
+    </div>
+
+    <div class="chart-wrapper">
+      <canvas id="attendanceChart"></canvas>
+    </div>
+
+    <input type="date" id="attendanceDate" class="form-control mt-3">
+
+    <input type="text" id="searchInput" class="form-control mt-2" placeholder="Search name or mobile">
+
+    <div class="table-responsive mt-3">
+      <table class="table table-striped" id="attendanceTable">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Mobile</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="attendanceTableBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+document.getElementById("attendanceDate").value =
+  new Date().toISOString().split("T")[0];
+
+let chart;
+
+// ================= LOAD ALL ROUTES =================
+function loadAttendance() {
+
+  const dateFilter = document.getElementById("attendanceDate").value;
+  const tbody = document.getElementById("attendanceTableBody");
+
+  // ✅ ALL ROUTES INCLUDED
+  const keys = [
+    "attendance",             // Gargoti
+    "attendance_senapati",    // Senapati Kapashi
+    "attendance_hupari"       // Hupari-Yalgud
+  ];
+
+  let records = [];
+
+  keys.forEach(key => {
+    const data = JSON.parse(localStorage.getItem(key)) || {};
+
+    Object.values(data).forEach(student => {
+      student.forEach(att => {
+        if (!dateFilter || att.date === dateFilter) {
+          records.push(att);
+        }
+      });
+    });
+  });
+
+  records.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  if (!records.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center">No Records Found</td></tr>`;
+    drawChart([]);
+    return;
+  }
+
+  tbody.innerHTML = records.map((r, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td>${r.name}</td>
+      <td>${r.mobile}</td>
+      <td>${r.date}</td>
+      <td>${r.status}</td>
+    </tr>
+  `).join("");
+
+  drawChart(records);
+}
+
+// ================= CHART =================
+function drawChart(records) {
+
+  const type = document.getElementById("chartType").value;
+
+  let map = {};
+
+  records.forEach(r => {
+    if (!map[r.date]) {
+      map[r.date] = {p:0,a:0};
+    }
+
+    if (r.status === "Present") map[r.date].p++;
+    else map[r.date].a++;
+  });
+
+  const labels = Object.keys(map);
+  const present = labels.map(d => map[d].p);
+  const absent = labels.map(d => map[d].a);
+
+  const ctx = document.getElementById("attendanceChart").getContext("2d");
+
+  if (chart) chart.destroy();
+
+  chart = new Chart(ctx, {
+    type: type,
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label:"Present",
+          data:present,
+          borderColor:"green",
+          backgroundColor:"rgba(0,255,0,0.3)"
+        },
+        {
+          label:"Absent",
+          data:absent,
+          borderColor:"red",
+          backgroundColor:"rgba(255,0,0,0.3)"
+        }
+      ]
+    }
+  });
+}
+
+// ================= SEARCH =================
+document.getElementById("searchInput").addEventListener("input", function(){
+  const val = this.value.toLowerCase();
+
+  document.querySelectorAll("#attendanceTableBody tr").forEach(row=>{
+    row.style.display =
+      row.innerText.toLowerCase().includes(val) ? "" : "none";
+  });
+});
+
+// ================= EVENTS =================
+document.getElementById("chartType").addEventListener("change", loadAttendance);
+document.getElementById("attendanceDate").addEventListener("change", loadAttendance);
+
+window.onload = loadAttendance;
+
+</script>
+
+</body>
+</html>

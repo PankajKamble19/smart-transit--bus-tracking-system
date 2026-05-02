@@ -1,0 +1,47 @@
+<!-- Sidebar / Navigation Bar -->
+<div class="sidebar">
+  <!-- Sidebar Header -->
+  <h2 style="color: #2ecc71;">🚌 Transport</h2>
+
+  <!-- Main Links -->
+  <a href="#" class="active" style="color: #2ecc71;">🏠 Home</a>
+
+  <!-- Bus List with Submenu -->
+  <a href="#" onclick="toggleMenu('busListMenu')" style="color: #ccc;">🚌 Bus List ▾</a>
+  <div class="submenu" id="busListMenu" style="display: none; background-color: #2a2a2a; border-left: 2px solid #2ecc71;">
+    <a href="bus_no1.html" style="color: #bbb;">🚌 Bus No. 1</a>
+    <a href="#" style="color: #bbb;">🚌 Bus No. 2</a>
+    <a href="#" style="color: #bbb;">🚌 Bus No. 3</a>
+    <a href="#" style="color: #bbb;">🚌 Bus No. 4</a>
+    <a href="#" style="color: #bbb;">🚌 Bus No. 5</a>
+    <a href="#" style="color: #bbb;">🚌 Bus No. 6</a>
+    <a href="#" style="color: #bbb;">🚌 Bus No. 7</a>
+    <a href="#" style="color: #bbb;">🚌 Bus No. 8</a>
+    <a href="#" style="color: #bbb;">🚌 Bus No. 9</a>
+    <a href="#" style="color: #bbb;">🚌 Bus No. 10</a>
+  </div>
+
+  <!-- Other Links -->
+  <a href="a_bus_management.html" style="color: #ccc;">🚍 Bus Management</a>
+  <a href="a_driver_management.html" style="color: #ccc;">👨‍✈️ Driver Management</a>
+  <a href="a_notification.html" style="color: #ccc;">🔔 Notifications</a>
+  <a href="#" style="color: #ccc;">🆘 Support / Help</a>
+
+  <!-- Dark Mode Button -->
+  <button class="dark-toggle" onclick="toggleDarkMode()" style="background-color: #2ecc71; color: #fff;">🌙 Dark Mode</button>
+
+  <!-- Logout / Home -->
+  <a href="index.html" class="logout" style="color: #ff5c5c;">🚪 BACK TO HOME</a>
+</div>
+
+<!-- Sidebar toggle script -->
+<script>
+  function toggleMenu(id) {
+    const menu = document.getElementById(id);
+    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+  }
+
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+  }
+</script>
