@@ -6,14 +6,14 @@
 <title>Bus No. 5 Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
-
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 
 body{
 display:flex;
-height:100vh;
+min-height:100vh;
 background:linear-gradient(135deg,#dff6ff,#f4f7ff);
 }
 
@@ -49,7 +49,6 @@ background:#4cd137;
 color:#1e272e;
 }
 
-/* 🔥 Attractive Back Button */
 .back-home{
 display:block;
 margin-top:40px;
@@ -75,6 +74,10 @@ padding:30px;
 width:calc(100% - 250px);
 }
 
+.header{
+margin-bottom:25px;
+}
+
 .cards{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -93,11 +96,34 @@ box-shadow:0 8px 18px rgba(0,0,0,0.1);
 color:#4cd137;
 }
 
-.map iframe{
+/* Live Map */
+.live-location-card{
+background:white;
+padding:20px;
+border-radius:14px;
+box-shadow:0 8px 18px rgba(0,0,0,0.1);
+margin-bottom:25px;
+}
+
+.live-location-card h3{
+text-align:center;
+margin-bottom:15px;
+color:#2c3e50;
+}
+
+#driverMap{
 width:100%;
-height:350px;
-border:none;
-border-radius:12px;
+height:450px;
+border-radius:14px;
+border:3px solid #4cd137;
+box-shadow:0 6px 16px rgba(0,0,0,0.15);
+}
+
+.location-info{
+text-align:center;
+margin-top:12px;
+font-size:15px;
+color:#2c3e50;
 }
 
 .bottom{
@@ -123,6 +149,31 @@ margin-bottom:15px;
 
 .driver{text-align:center;}
 
+@media(max-width:768px){
+body{
+display:block;
+}
+
+.sidebar{
+position:relative;
+width:100%;
+height:auto;
+}
+
+.main{
+margin-left:0;
+width:100%;
+padding:20px;
+}
+
+.bottom{
+grid-template-columns:1fr;
+}
+
+#driverMap{
+height:320px;
+}
+}
 </style>
 </head>
 
@@ -131,8 +182,8 @@ margin-bottom:15px;
 <div class="sidebar">
 <h2>🚌 Bus No. 5</h2>
 
-<a href="b_regi_no5.html" class="active">Student Records</a>
-<a href="b_atten_no5.html">Attendance</a>
+<a href="e_regi_no5.html" class="active">Student Records</a>
+<a href="e_atten_no5.html">Attendance</a>
 <a href="#">Bus Schedule</a>
 <br>
 
@@ -141,34 +192,44 @@ margin-bottom:15px;
 
 <div class="main">
 
+<div class="header">
+<h2>Admin Dashboard - Bus No. 5</h2>
+</div>
+
 <div class="cards">
 <div class="card"><h3>Bus Number</h3><p>MH09-GJ-3316</p></div>
 <div class="card"><h3>Route</h3><p>Malkapur → Kolhapur</p></div>
-<div class="card"><h3>Total Seats</h3><p>40</p></div>
-<div class="card"><h3>Conductor</h3><p>Mr.Karan Kamble</p></div>
+<div class="card"><h3>Total Seats</h3><p>42</p></div>
+<div class="card"><h3>Conductor</h3><p>Mr. Karan Kamble</p></div>
 </div>
 
-<div class="map">
-<h3 style="color:#4cd137;">📍 Bus Location</h3>
-<iframe src="https://www.google.com/maps?q=malkapur&output=embed"></iframe>
+<div class="live-location-card">
+<h3>📍 Live Bus Location</h3>
+
+<div id="driverMap"></div>
+
+<div class="location-info">
+<p id="driverCoords">⏳ Waiting for driver...</p>
+<p id="driverTime"></p>
+<p id="driverPlace"></p>
+</div>
 </div>
 
 <div class="bottom">
 
 <div class="card">
 <h3>Bus Information</h3>
-<img src="assets\images\bus_no1.jpg" class="bus-img">
+<img src="assets/images/bus_no1.jpg" class="bus-img">
 <p><b>Bus Number:</b> MH09-GJ-3316</p>
 <p><b>Route:</b> Malkapur → Kolhapur</p>
 <p><b>Total Seats:</b> 42</p>
-<p><b>Conductor:</b> Mr.Karan Kamble</p>
+<p><b>Conductor:</b> Mr. Karan Kamble</p>
 </div>
 
 <div class="card driver">
 <h3>Driver Profile</h3>
-<img src="assets\images\salvan.jpg" class="driver-img">
-<p><b>Name:</b> Mr.Karan Kamble</p>
-
+<img src="assets/images/salvan.jpg" class="driver-img">
+<p><b>Name:</b> Mr. Karan Kamble</p>
 <p><b>Experience:</b> 10 Years</p>
 <p><b>Contact:</b> +91 7972388254</p>
 <p><b>License No:</b> MH09-DRV-45678</p>
@@ -176,6 +237,101 @@ margin-bottom:15px;
 
 </div>
 </div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDfSe0P5e3G0ifXPZaXsWB8knSPVo8payE",
+  authDomain: "tracking-bus-29dd8.firebaseapp.com",
+  databaseURL:"https://tracking-bus-29dd8-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tracking-bus-29dd8",
+  storageBucket: "tracking-bus-29dd8.firebasestorage.app",
+  messagingSenderId: "733874281179",
+  appId: "1:733874281179:web:89873e7f72578c6da34afe"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/*
+  IMPORTANT:
+  Change this driverId to Bus No.5 driver's actual Firebase driver ID/mobile number.
+*/
+const driverId = "9096822087";
+const driverRef = db.ref("drivers/" + driverId);
+
+const map = L.map("driverMap").setView([16.705, 74.243], 12);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution: "&copy; OpenStreetMap contributors"
+}).addTo(map);
+
+let marker = L.marker([16.705, 74.243]).addTo(map)
+  .bindPopup("Waiting for Bus No. 5 location")
+  .openPopup();
+
+let pathPoints = [];
+let polyline = L.polyline(pathPoints, {
+  color: "blue",
+  weight: 5,
+  opacity: 0.8
+}).addTo(map);
+
+driverRef.on("value", async snap => {
+  if (!snap.exists()) {
+    document.getElementById("driverCoords").innerHTML = "No data available";
+    document.getElementById("driverTime").innerHTML = "";
+    document.getElementById("driverPlace").innerHTML = "";
+    return;
+  }
+
+  const data = snap.val();
+
+  if (data.status === "inactive") {
+    document.getElementById("driverCoords").innerHTML = "🔴 Driver Offline";
+    document.getElementById("driverTime").innerHTML = "";
+    document.getElementById("driverPlace").innerHTML = "";
+    return;
+  }
+
+  const lat = data.lat;
+  const lng = data.lng;
+  const time = data.time || "Recently";
+
+  if (!lat || !lng) {
+    document.getElementById("driverCoords").innerHTML = "Location data incomplete";
+    return;
+  }
+
+  marker.setLatLng([lat, lng])
+    .bindPopup("🚌 Bus No. 5 Live Location")
+    .openPopup();
+
+  map.setView([lat, lng], 16);
+
+  if (pathPoints.length > 50) pathPoints.shift();
+
+  pathPoints.push([lat, lng]);
+  polyline.setLatLngs(pathPoints);
+
+  document.getElementById("driverCoords").innerHTML = "🚌 Bus No. 5 is Live on Route";
+  document.getElementById("driverTime").innerHTML = `⏱ Last update: ${time}`;
+
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+    const res = await fetch(url);
+    const json = await res.json();
+    const place = json.display_name || "Unknown location";
+
+    document.getElementById("driverPlace").innerHTML = `📍 Location: ${place}`;
+  } catch (error) {
+    document.getElementById("driverPlace").innerHTML = "📍 Location: Not Available";
+  }
+});
+</script>
 
 </body>
 </html>
