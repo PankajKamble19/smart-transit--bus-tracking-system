@@ -146,61 +146,99 @@ input::placeholder{color:#aaa;}
 </div>
 
 <script>
+const API_URL = "https://smart-transit-bus-tracking-system.onrender.com";
+
 function toggleForm(){
   document.getElementById("loginForm").classList.toggle("active");
   document.getElementById("signupForm").classList.toggle("active");
 }
 
-// SIGNUP
-function signup(){
-  let username = signupUsername.value.trim();
-  let email = signupEmail.value.trim();
-  let password = signupPassword.value;
+async function signup(){
+  const username = signupUsername.value.trim();
+  const email = signupEmail.value.trim().toLowerCase();
+  const password = signupPassword.value;
+  const msg = document.getElementById("signupMsg");
 
-  let msg = document.getElementById("signupMsg");
+  msg.style.color = "#ff7675";
 
   if(!username || !email || !password){
-    msg.innerText="All fields required!";
+    msg.innerText = "All fields required!";
     return;
   }
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+  try{
+    const res = await fetch(`${API_URL}/api/auth/signup`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        name:username,
+        email,
+        password,
+        role:"student"
+      })
+    });
 
-  let exists = users.some(u => u.email === email);
+    const data = await res.json();
 
-  if(exists){
-    msg.innerText="User already exists!";
-    return;
+    if(res.ok){
+      msg.style.color="#4cd137";
+      msg.innerText="Account created!";
+
+      setTimeout(()=>{
+        toggleForm();
+        loginUsername.value=email;
+      },1000);
+    }else{
+      msg.innerText=data.message || "Signup failed!";
+    }
+
+  }catch{
+    msg.innerText="Server error!";
   }
-
-  users.push({username,email,password});
-  localStorage.setItem("users", JSON.stringify(users));
-
-  msg.innerText="Account Created!";
-  setTimeout(toggleForm,1000);
 }
 
-// LOGIN
-function login(){
-  let username = loginUsername.value.trim();
-  let password = loginPassword.value;
+async function login(){
+  const email = loginUsername.value.trim().toLowerCase();
+  const password = loginPassword.value;
+  const msg = document.getElementById("loginMsg");
 
-  let msg = document.getElementById("loginMsg");
+  msg.style.color="#ff7675";
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+  if(!email || !password){
+    msg.innerText="Email & password required!";
+    return;
+  }
 
-  let user = users.find(u =>
-    (u.username === username || u.email === username) &&
-    u.password === password
-  );
+  try{
+    const res = await fetch(`${API_URL}/api/auth/login`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({email,password})
+    });
 
-  if(user){
-    msg.innerText="Login Successful!";
+    const data = await res.json();
+
+    if(!res.ok){
+      msg.innerText=data.message || "Invalid!";
+      return;
+    }
+
+    if(data.user.role !== "student"){
+      msg.innerText="Access denied!";
+      return;
+    }
+
+    localStorage.setItem("token",data.token);
+
+    msg.style.color="#4cd137";
+    msg.innerText="Login success!";
+
     setTimeout(()=>{
       window.location.href="mal_dashboard.html";
     },1000);
-  } else {
-    msg.innerText="Invalid Credentials!";
+
+  }catch{
+    msg.innerText="Server error!";
   }
 }
 </script>

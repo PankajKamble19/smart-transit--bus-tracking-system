@@ -243,72 +243,114 @@ input::placeholder{
 </div>
 
 <script>
-// Toggle Login/Signup
+const API_URL = "https://smart-transit-bus-tracking-system.onrender.com";
+
+// Toggle
 function toggleForm(){
   document.getElementById("loginForm").classList.toggle("active");
   document.getElementById("signupForm").classList.toggle("active");
 }
 
-// SIGNUP
-function signup(){
-  let username = document.getElementById("signupUsername").value.trim();
-  let email = document.getElementById("signupEmail").value.trim();
-  let password = document.getElementById("signupPassword").value;
+// DRIVER SIGNUP
+async function signup(){
+  const username = document.getElementById("signupUsername").value.trim();
+  const email = document.getElementById("signupEmail").value.trim().toLowerCase();
+  const password = document.getElementById("signupPassword").value;
+  const msg = document.getElementById("signupMsg");
 
-  let msg = document.getElementById("signupMsg");
+  msg.style.color = "#ff7675";
 
   if(!username || !email || !password){
-    msg.innerText="All fields required!";
+    msg.innerText = "All fields required!";
     return;
   }
 
-  let drivers = JSON.parse(localStorage.getItem("drivers")) || [];
+  try{
+    const response = await fetch(`${API_URL}/api/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: username,
+        email: email,
+        password: password,
+        role: "driver"
+      })
+    });
 
-  // Check duplicate username or email
-  let exists = drivers.some(d =>
-    d.username === username || d.email === email
-  );
+    const data = await response.json();
 
-  if(exists){
-    msg.innerText="Driver already exists!";
-    return;
+    if(response.ok){
+      msg.style.color = "#4cd137";
+      msg.innerText = "Driver account created!";
+
+      setTimeout(()=>{
+        toggleForm();
+        document.getElementById("signupUsername").value = "";
+        document.getElementById("signupEmail").value = "";
+        document.getElementById("signupPassword").value = "";
+      },1000);
+    }else{
+      msg.innerText = data.message || "Signup failed!";
+    }
+
+  }catch(error){
+    msg.innerText = "Server error! Backend not reachable.";
+    console.error(error);
   }
-
-  drivers.push({username,email,password});
-  localStorage.setItem("drivers", JSON.stringify(drivers));
-
-  msg.innerText="Account Created Successfully!";
-
-  setTimeout(()=>{
-    document.getElementById("signupUsername").value="";
-    document.getElementById("signupEmail").value="";
-    document.getElementById("signupPassword").value="";
-    msg.innerText="";
-    toggleForm();
-  },1000);
 }
 
-// LOGIN
-function login(){
-  let username = document.getElementById("loginUsername").value.trim();
-  let password = document.getElementById("loginPassword").value;
+// DRIVER LOGIN
+async function login(){
+  const email = document.getElementById("loginUsername").value.trim().toLowerCase();
+  const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMsg");
 
-  let msg = document.getElementById("loginMsg");
+  msg.style.color = "#ff7675";
 
-  let drivers = JSON.parse(localStorage.getItem("drivers")) || [];
+  if(!email || !password){
+    msg.innerText = "Email and password are required!";
+    return;
+  }
 
-  let driver = drivers.find(d =>
-    (d.username === username || d.email === username) &&
-    d.password === password
-  );
+  try{
+    const response = await fetch(`${API_URL}/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
 
-  if(driver){
-    msg.innerText="Login Successful!";
+    const data = await response.json();
+
+    if(!response.ok){
+      msg.innerText = data.message || "Invalid credentials!";
+      return;
+    }
+
+    if(data.user.role !== "driver"){
+      msg.innerText = `Access denied! This account is ${data.user.role}`;
+      return;
+    }
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    msg.style.color = "#4cd137";
+    msg.innerText = "Login successful! Redirecting...";
+
     setTimeout(()=>{
-      window.location.href="driver_dashboard1.html";
+      window.location.href = "driver_dashboard1.html";
     },1000);
-  } else {
-    msg.innerText="Invalid Credentials!";
+
+  }catch(error){
+    msg.innerText = "Server error! Backend not reachable.";
+    console.error(error);
   }
 }
 
@@ -326,7 +368,6 @@ function closeModal(){
   document.getElementById("infoModal").style.display="none";
 }
 
-// Close Modal Outside Click
 window.onclick = function(event){
   let modal = document.getElementById("infoModal");
   if(event.target == modal){

@@ -110,7 +110,7 @@ input::placeholder{color:#aaa;}
 <div class="form active" id="loginForm">
   <h2>Student Login</h2>
 
-  <input type="text" id="loginUsername" placeholder="Username or Email">
+  <input type="text" id="loginUsername" placeholder="Email">
   <input type="password" id="loginPassword" placeholder="Password">
 
   <div class="forgot">
@@ -146,61 +146,121 @@ input::placeholder{color:#aaa;}
 </div>
 
 <script>
+const API_URL = "https://smart-transit-bus-tracking-system.onrender.com";
+
 function toggleForm(){
   document.getElementById("loginForm").classList.toggle("active");
   document.getElementById("signupForm").classList.toggle("active");
 }
 
-// SIGNUP
-function signup(){
-  let username = signupUsername.value.trim();
-  let email = signupEmail.value.trim();
-  let password = signupPassword.value;
+async function signup(){
+  const username = document.getElementById("signupUsername").value.trim();
+  const email = document.getElementById("signupEmail").value.trim().toLowerCase();
+  const password = document.getElementById("signupPassword").value;
+  const msg = document.getElementById("signupMsg");
 
-  let msg = document.getElementById("signupMsg");
+  msg.style.color = "#ff7675";
 
   if(!username || !email || !password){
-    msg.innerText="All fields required!";
+    msg.innerText = "All fields required!";
     return;
   }
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+  try{
+    const response = await fetch(`${API_URL}/api/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: username,
+        email: email,
+        password: password,
+        role: "student"
+      })
+    });
 
-  let exists = users.some(u => u.email === email);
+    const data = await response.json();
 
-  if(exists){
-    msg.innerText="User already exists!";
-    return;
+    if(response.ok){
+      msg.style.color = "#4cd137";
+      msg.innerText = "Account created successfully! Now login.";
+
+      setTimeout(() => {
+        document.getElementById("signupUsername").value = "";
+        document.getElementById("signupEmail").value = "";
+        document.getElementById("signupPassword").value = "";
+        toggleForm();
+
+        document.getElementById("loginUsername").value = email;
+        document.getElementById("loginMsg").style.color = "#4cd137";
+        document.getElementById("loginMsg").innerText = "Use same password to login.";
+      }, 1000);
+
+    }else{
+      msg.innerText = data.message || "Signup failed!";
+    }
+
+  }catch(error){
+    msg.innerText = "Server error! Backend not reachable.";
+    console.error(error);
   }
-
-  users.push({username,email,password});
-  localStorage.setItem("users", JSON.stringify(users));
-
-  msg.innerText="Account Created!";
-  setTimeout(toggleForm,1000);
 }
 
-// LOGIN
-function login(){
-  let username = loginUsername.value.trim();
-  let password = loginPassword.value;
+async function login(){
+  const email = document.getElementById("loginUsername").value.trim().toLowerCase();
+  const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMsg");
 
-  let msg = document.getElementById("loginMsg");
+  msg.style.color = "#ff7675";
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+  if(!email || !password){
+    msg.innerText = "Email and password are required!";
+    return;
+  }
 
-  let user = users.find(u =>
-    (u.username === username || u.email === username) &&
-    u.password === password
-  );
+  try{
+    const response = await fetch(`${API_URL}/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
 
-  if(user){
-    msg.innerText="Login Successful!";
-    setTimeout(()=>{
-      window.location.href="gargoti_dashboard.html";
-    },1000);
-  } else {
-    msg.innerText="Invalid Credentials!";
+    const data = await response.json();
+
+    if(!response.ok){
+      msg.innerText = data.message || "Invalid credentials!";
+      return;
+    }
+
+    if(!data.token || !data.user){
+      msg.innerText = "Login failed! Token not received.";
+      return;
+    }
+
+    if(data.user.role !== "student"){
+      msg.innerText = `Access denied! This account role is ${data.user.role}, not student.`;
+      return;
+    }
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    msg.style.color = "#4cd137";
+    msg.innerText = "Login successful! Redirecting...";
+
+    setTimeout(() => {
+      window.location.href = "gargoti_dashboard.html";
+    }, 1000);
+
+  }catch(error){
+    msg.innerText = "Server error! Backend not reachable.";
+    console.error(error);
   }
 }
 </script>

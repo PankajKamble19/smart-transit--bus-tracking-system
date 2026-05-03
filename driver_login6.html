@@ -243,94 +243,99 @@ input::placeholder{
 </div>
 
 <script>
-// Toggle Login/Signup
+const API_URL = "https://smart-transit-bus-tracking-system.onrender.com";
+
 function toggleForm(){
   document.getElementById("loginForm").classList.toggle("active");
   document.getElementById("signupForm").classList.toggle("active");
 }
 
-// SIGNUP
-function signup(){
-  let username = document.getElementById("signupUsername").value.trim();
-  let email = document.getElementById("signupEmail").value.trim();
-  let password = document.getElementById("signupPassword").value;
+async function signup(){
+  const username = signupUsername.value.trim();
+  const email = signupEmail.value.trim().toLowerCase();
+  const password = signupPassword.value;
+  const msg = document.getElementById("signupMsg");
 
-  let msg = document.getElementById("signupMsg");
+  msg.style.color="#ff7675";
 
   if(!username || !email || !password){
     msg.innerText="All fields required!";
     return;
   }
 
-  let drivers = JSON.parse(localStorage.getItem("drivers")) || [];
+  try{
+    const res = await fetch(`${API_URL}/api/auth/signup`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        name:username,
+        email,
+        password,
+        role:"driver"
+      })
+    });
 
-  // Check duplicate username or email
-  let exists = drivers.some(d =>
-    d.username === username || d.email === email
-  );
+    const data = await res.json();
 
-  if(exists){
-    msg.innerText="Driver already exists!";
+    if(res.ok){
+      msg.style.color="#4cd137";
+      msg.innerText="Driver created!";
+
+      setTimeout(()=>{
+        toggleForm();
+        loginUsername.value=email;
+      },1000);
+    }else{
+      msg.innerText=data.message || "Signup failed!";
+    }
+
+  }catch{
+    msg.innerText="Server error!";
+  }
+}
+
+async function login(){
+  const email = loginUsername.value.trim().toLowerCase();
+  const password = loginPassword.value;
+  const msg = document.getElementById("loginMsg");
+
+  msg.style.color="#ff7675";
+
+  if(!email || !password){
+    msg.innerText="Email & password required!";
     return;
   }
 
-  drivers.push({username,email,password});
-  localStorage.setItem("drivers", JSON.stringify(drivers));
+  try{
+    const res = await fetch(`${API_URL}/api/auth/login`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({email,password})
+    });
 
-  msg.innerText="Account Created Successfully!";
+    const data = await res.json();
 
-  setTimeout(()=>{
-    document.getElementById("signupUsername").value="";
-    document.getElementById("signupEmail").value="";
-    document.getElementById("signupPassword").value="";
-    msg.innerText="";
-    toggleForm();
-  },1000);
-}
+    if(!res.ok){
+      msg.innerText=data.message || "Invalid!";
+      return;
+    }
 
-// LOGIN
-function login(){
-  let username = document.getElementById("loginUsername").value.trim();
-  let password = document.getElementById("loginPassword").value;
+    if(data.user.role !== "driver"){
+      msg.innerText="Access denied!";
+      return;
+    }
 
-  let msg = document.getElementById("loginMsg");
+    localStorage.setItem("token",data.token);
 
-  let drivers = JSON.parse(localStorage.getItem("drivers")) || [];
+    msg.style.color="#4cd137";
+    msg.innerText="Login success!";
 
-  let driver = drivers.find(d =>
-    (d.username === username || d.email === username) &&
-    d.password === password
-  );
-
-  if(driver){
-    msg.innerText="Login Successful!";
     setTimeout(()=>{
       window.location.href="driver_dashboard6.html";
     },1000);
-  } else {
-    msg.innerText="Invalid Credentials!";
-  }
-}
 
-// Forgot Password
-function forgotPassword(){
-  window.location.href="d_forgot6.html";
-}
-
-// Modal
-function openModal(){
-  document.getElementById("infoModal").style.display="flex";
-}
-
-function closeModal(){
-  document.getElementById("infoModal").style.display="none";
-}
-
-// Close Modal Outside Click
-window.onclick = function(event){
-  let modal = document.getElementById("infoModal");
-  if(event.target == modal){
-    modal.style.display = "none";
+  }catch{
+    msg.innerText="Server error!";
   }
 }
 </script>
