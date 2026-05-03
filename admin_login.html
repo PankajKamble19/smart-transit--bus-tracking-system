@@ -30,14 +30,8 @@ body{
   to{transform:translateY(0);opacity:1;}
 }
 
-.form{
-  display:none;
-  flex-direction:column;
-}
-
-.form.active{
-  display:flex;
-}
+.form{display:none;flex-direction:column;}
+.form.active{display:flex;}
 
 h2{
   text-align:center;
@@ -54,9 +48,7 @@ input{
   color:#fff;
 }
 
-input::placeholder{
-  color:#aaa;
-}
+input::placeholder{color:#aaa;}
 
 .btn{
   margin-top:15px;
@@ -69,9 +61,7 @@ input::placeholder{
   cursor:pointer;
 }
 
-.btn:hover{
-  background:#3ebc29;
-}
+.btn:hover{background:#3ebc29;}
 
 .toggle{
   margin-top:12px;
@@ -86,23 +76,17 @@ input::placeholder{
   cursor:pointer;
 }
 
-.toggle a:hover{
-  text-decoration:underline;
-}
-
 .forgot{
   text-align:right;
   font-size:12px;
 }
 
-.forgot a{
+.forgot a,.learn a{
   color:#aaa;
   text-decoration:none;
 }
 
-.forgot a:hover{
-  color:#fff;
-}
+.forgot a:hover,.learn a:hover{color:#fff;}
 
 .message{
   margin-top:8px;
@@ -115,15 +99,6 @@ input::placeholder{
   margin-top:10px;
   text-align:center;
   font-size:12px;
-}
-
-.learn a{
-  color:#aaa;
-  text-decoration:none;
-}
-
-.learn a:hover{
-  color:#fff;
 }
 
 /* Modal */
@@ -169,10 +144,6 @@ input::placeholder{
   font-weight:bold;
   cursor:pointer;
 }
-
-.close-btn:hover{
-  background:#3ebc29;
-}
 </style>
 </head>
 
@@ -184,7 +155,7 @@ input::placeholder{
 <div class="form active" id="loginForm">
   <h2>Admin Login</h2>
 
-  <input type="text" id="loginUsername" placeholder="Username or Email">
+  <input type="text" id="loginUsername" placeholder="Email">
   <input type="password" id="loginPassword" placeholder="Password">
 
   <div class="forgot">
@@ -243,91 +214,131 @@ input::placeholder{
 </div>
 
 <script>
+const API_URL = "https://smart-transit-bus-tracking-system.onrender.com";
+
 // Toggle Login/Signup
 function toggleForm(){
   document.getElementById("loginForm").classList.toggle("active");
   document.getElementById("signupForm").classList.toggle("active");
 }
 
-// SIGNUP
-function signup(){
-  let username = document.getElementById("signupUsername").value.trim();
-  let email = document.getElementById("signupEmail").value.trim();
-  let password = document.getElementById("signupPassword").value;
+// SIGNUP WITH BACKEND
+async function signup(){
+  const username = document.getElementById("signupUsername").value.trim();
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value;
+  const msg = document.getElementById("signupMsg");
 
-  let msg = document.getElementById("signupMsg");
+  msg.style.color = "#ff7675";
 
   if(!username || !email || !password){
-    msg.innerText="All fields required!";
+    msg.innerText = "All fields required!";
     return;
   }
 
-  let admins = JSON.parse(localStorage.getItem("admins")) || [];
+  try{
+    const response = await fetch(`${API_URL}/api/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: username,
+        email: email,
+        password: password,
+        role: "admin"
+      })
+    });
 
-  let exists = admins.some(a =>
-    a.username === username || a.email === email
-  );
+    const data = await response.json();
 
-  if(exists){
-    msg.innerText="Admin already exists!";
-    return;
+    if(response.ok){
+      msg.style.color = "#4cd137";
+      msg.innerText = "Admin account created successfully!";
+
+      setTimeout(()=>{
+        document.getElementById("signupUsername").value = "";
+        document.getElementById("signupEmail").value = "";
+        document.getElementById("signupPassword").value = "";
+        msg.innerText = "";
+        toggleForm();
+      },1000);
+    }else{
+      msg.innerText = data.message || "Signup failed!";
+    }
+
+  }catch(error){
+    msg.innerText = "Server error! Please check backend connection.";
   }
-
-  admins.push({username,email,password});
-  localStorage.setItem("admins", JSON.stringify(admins));
-
-  msg.innerText="Account Created Successfully!";
-
-  setTimeout(()=>{
-    document.getElementById("signupUsername").value="";
-    document.getElementById("signupEmail").value="";
-    document.getElementById("signupPassword").value="";
-    msg.innerText="";
-    toggleForm();
-  },1000);
 }
 
-// LOGIN
-function login(){
-  let username = document.getElementById("loginUsername").value.trim();
-  let password = document.getElementById("loginPassword").value;
+// LOGIN WITH BACKEND
+async function login(){
+  const email = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMsg");
 
-  let msg = document.getElementById("loginMsg");
+  msg.style.color = "#ff7675";
 
-  let admins = JSON.parse(localStorage.getItem("admins")) || [];
+  if(!email || !password){
+    msg.innerText = "Email and password are required!";
+    return;
+  }
 
-  let admin = admins.find(a =>
-    (a.username === username || a.email === username) &&
-    a.password === password
-  );
+  try{
+    const response = await fetch(`${API_URL}/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
 
-  if(admin){
-    msg.innerText="Login Successful!";
-    setTimeout(()=>{
-      window.location.href="admin_dashbord.html";
-    },1000);
-  } else {
-    msg.innerText="Invalid Credentials!";
+    const data = await response.json();
+
+    if(response.ok && data.token){
+      if(data.user.role !== "admin"){
+        msg.innerText = "Access denied! Only admin can login here.";
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      msg.style.color = "#4cd137";
+      msg.innerText = "Login Successful! Redirecting...";
+
+      setTimeout(()=>{
+        window.location.href = "admin_dashbord.html";
+      },1000);
+    }else{
+      msg.innerText = data.message || "Invalid credentials!";
+    }
+
+  }catch(error){
+    msg.innerText = "Server error! Please check backend connection.";
   }
 }
 
 // Forgot Password
 function forgotPassword(){
-  window.location.href="a_forgot.html";
+  window.location.href = "a_forgot.html";
 }
 
 // Modal
 function openModal(){
-  document.getElementById("infoModal").style.display="flex";
+  document.getElementById("infoModal").style.display = "flex";
 }
 
 function closeModal(){
-  document.getElementById("infoModal").style.display="none";
+  document.getElementById("infoModal").style.display = "none";
 }
 
-// Close Modal Outside Click
 window.onclick = function(event){
-  let modal = document.getElementById("infoModal");
+  const modal = document.getElementById("infoModal");
   if(event.target == modal){
     modal.style.display = "none";
   }
